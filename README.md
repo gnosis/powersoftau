@@ -19,7 +19,7 @@ Every participant needs to create a ssh key. For help see [here](https://conflue
 1. You download latest challenge file from ftp-server with your ssl key.
 	You can use an UI program as Filezilla(host is trusted-setup.gnosis.pm) or the following shell command:
 		```bash
-		sftp -i ~/.ssh/id_rsa  your_user_name@trusted-setup.gnosis.pm:challenge ~/challenge
+		sftp -i ~/.ssh/id_rsa  your_user_name@trusted-setup.gnosis.pm:challenges//challenge ~/challenge
 		```
 2. Copy the downloaded challenge file to your dedicated computer for running the ceremony.
 3. Download the repository
@@ -27,7 +27,7 @@ Every participant needs to create a ssh key. For help see [here](https://conflue
 	and copy it to your dedicated computer.
 4. Performany some of the recommendated steps for ceremony from the next section.	
 5. Then do the acutal computation:
-	 cargo run --release --bin compute_constrained
+	 cargo run --release --bin compute
 6. Broadcast your contribution hash via twitter or your preferred social media account. 
 7. Upload the response file to ftp-server.  
 
@@ -47,6 +47,22 @@ Participants of the ceremony sample some randomness, perform a computation, and 
 * lots of other ideas we can't think of
 
 It is totally up to the participants. In general, participants should beware of side-channel attacks and assume that remnants of the randomness will be in RAM after the computation has finished.
+
+## Running docker image for automatic validation 
+
+For starting the docker, just run:
+```bash
+ docker build --tag=valdiation_worker .
+ docker run -it -v ~/.ssh/:/root/.ssh valdiation_worker bash
+```
+The log outputs can be found of the cron jobs can be found here:
+```bash
+/var/log/cron.log
+```
+For stopping the containerrun:
+```bash
+docker stop <container_id>
+```
 
 ## License
 
