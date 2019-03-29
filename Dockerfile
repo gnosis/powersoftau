@@ -5,11 +5,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 
 RUN apt-get update && apt-get -y install cron \
  				lftp \
-				nano \
+				nano 
 
 WORKDIR /app
 
-COPY Cargo.toml Cargo.lock src/ ./
+COPY Cargo.toml Cargo.lock ./
+COPY src/. src/.
 RUN cargo build
 
 #support for sftp
