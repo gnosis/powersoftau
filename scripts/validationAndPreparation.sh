@@ -45,7 +45,6 @@ if [[ !  -z "${NEWESTFILE}" ]]; then
 	echo "uploading to ftp server and documentation; this could take a while..."
 	mv mv new_challenge challenge
 	mv response "response-$NEWESTFILE-$TRUSTEDSETUPTURN"
-
 	
 	#upload new challenge file for next candiate
 	echo "put challenge" | sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:challenges
@@ -62,3 +61,4 @@ fi
 #safe new variables for next execution
 echo $TRUSTEDSETUPTURN+1 > /app/config/LastestContributionTurn.txt
 echo $NEWESTDATE > /app/config/LastestContributionDate.txt
+
