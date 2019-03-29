@@ -53,15 +53,15 @@ It is totally up to the participants. In general, participants should beware of 
 For starting the docker, just run:
 ```bash
  docker build --tag=valdiation_worker .
- docker run -it -v ~/.ssh/:/root/.ssh valdiation_worker bash
+ docker run -it -v ~/.ssh/:/root/.ssh -e CONSTRAINED=true valdiation_worker  bash 
 ```
 The log outputs can be found of the cron jobs can be found here:
 ```bash
 /var/log/cron.log
 ```
-For stopping the containerrun:
+Sometimes cron takes a while to start the first service, then just type cron
 ```bash
-docker stop <container_id>
+cron
 ```
 
 ## License

@@ -30,18 +30,17 @@ do
 done
 
 #If a new contribution is found, do verification and preparation for next step
-if [[ !  -z "${NEWESTFILE}" ]]; then|
+if [[ !  -z "${NEWESTFILE}" ]]; then
 	cd /app/
 	echo "starting download; this could take a while..."
 	sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:${NEWESTFILE} ~/.
 
 	echo "verifying the submission; this could take a while..."
-	if [[ ! -z "${CONSTRAINED}" ]]; then|
+	if [[ ! -z "${CONSTRAINED}" ]]; then
 		cargo run --release --bin verify_transform_constrained
 	else
 		cargo run --release --bin verify_transform
 	fi
-	cargo run --release --bin verify_transform
 
 	echo "uploading to ftp server and documentation; this could take a while..."
 	mv mv new_challenge challenge
