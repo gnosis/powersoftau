@@ -3,15 +3,13 @@ MAINTAINER alex@gnosis.pm
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 
-RUN apt-get update && apt-get -y install cron
-RUN apt-get -y install lftp
-RUN apt-get -y install nano
+RUN apt-get update && apt-get -y install cron \
+ 				lftp \
+				nano \
 
 WORKDIR /app
 
-COPY src/. src/.
-COPY Cargo.toml .
-COPY Cargo.lock .
+COPY Cargo.toml Cargo.lock src/ ./
 RUN cargo build
 
 #support for sftp
@@ -21,8 +19,8 @@ COPY scripts/. scripts/.
 
 #create config file for validation script
 RUN mkdir /app/config
-RUN echo '1' > /app/config/lastestContributionDate.txt
-RUN echo '1' > /app/config/lastestContributionTurn.txt
+RUN echo '$LATESTCONTRIBTUIONDATE' > /app/config/lastestContributionDate.txt
+RUN echo '$LATESTCONTRIBUTIONTURN' > /app/config/lastestContributionTurn.txt
 
 
 # Add crontab file in the cron directory

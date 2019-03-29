@@ -4,9 +4,9 @@ FILES=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set
 
 #no contribution in folder challenges expected
 FILES=${FILES//$challenges/}
-NEWESTDATE=`cat /app/config/lastestContributionDate.txt`
-if [[ -z "${NEWESTDATE}" ]]; then
-  NEWESTDATE=0
+DATEOFNEWESTCONTRIBUTION=`cat /app/config/lastestContributionDate.txt`
+if [[ -z "${DATEOFNEWESTCONTRIBUTION}" ]]; then
+  DATEOFNEWESTCONTRIBUTION=0
 fi
 
 TRUSTEDSETUPTURN=`cat /app/config/lastestContributionTurn.txt`
@@ -16,18 +16,22 @@ fi
 
 unset NEWESTFILE
 
+#find the newest file in the sftp server
 for f in $FILES
 do
 	echo "Processing $f"
 	DATE=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $6}' | sed 's/[^0-9]*//g'`
 	echo "DATE is $DATE"
-	if [ $DATE -gt $NEWESTDATE ]; then
+	if [ $DATE -gt $DATEOFNEWESTCONTRIBUTION ]; then
 		echo "found newer contribution"
-		NEWESTDATE=$DATE
+		DATEOFNEWESTCONTRIBUTION=$DATE
 		NEWESTFILE=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $7}'`
 		echo "newest contribution is $NEWESTFILE"
 	fi	
 done
+
+#safe date of newest contribution so that files are not verified twice
+echo $DATEOFNEWESTCONTRIBUTION > /app/config/LastestContributionDate.txt
 
 #If a new contribution is found, do verification and preparation for next step
 if [[ !  -z "${NEWESTFILE}" ]]; then
@@ -60,5 +64,4 @@ fi
 
 #safe new variables for next execution
 echo $TRUSTEDSETUPTURN+1 > /app/config/LastestContributionTurn.txt
-echo $NEWESTDATE > /app/config/LastestContributionDate.txt
 
