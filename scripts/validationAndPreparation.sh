@@ -36,6 +36,11 @@ if [[ !  -z "${NEWESTFILE}" ]]; then|
 	sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:${NEWESTFILE} ~/.
 
 	echo "verifying the submission; this could take a while..."
+	if [[ ! -z "${CONSTRAINED}" ]]; then|
+		cargo run --release --bin verify_transform_constrained
+	else
+		cargo run --release --bin verify_transform
+	fi
 	cargo run --release --bin verify_transform
 
 	echo "uploading to ftp server and documentation; this could take a while..."
