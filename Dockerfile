@@ -1,5 +1,4 @@
 FROM rust:latest
-<<<<<<< HEAD
 MAINTAINER alex@gnosis.pm
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
@@ -28,23 +27,6 @@ RUN echo '1' > /app/config/lastestContributionTurn.txt
 
 # Add crontab file in the cron directory
 ADD tasks/cron-task /etc/cron.d/hello-cron
-=======
-COPY . /app
-
-RUN apt-get update \
- && apt-get install -y --no-install-recommends \
-    nano \
-    sudo \
-    sftp \
-    lftp  
-
-COPY tasks/cron-task /etc/crontabs/root
-
-RUN apt-get update && apt-get -y install cron
-
-# Add crontab file in the cron directory
-ADD crontab /etc/cron.d/hello-cron
->>>>>>> master
 
 # Give execution rights on the cron job
 RUN chmod 0644 /etc/cron.d/hello-cron
@@ -56,8 +38,5 @@ RUN crontab /etc/cron.d/hello-cron
 RUN touch /var/log/cron.log
 
 # Run the command on container startup
-<<<<<<< HEAD
 CMD ["cron", "-f"]
-=======
-CMD cron && tail -f /var/log/cron.log
->>>>>>> master
+
