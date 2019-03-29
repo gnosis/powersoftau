@@ -3,7 +3,7 @@
 ##Procedure -last setup:
 
 #Server runs the beacon step with tbd beacon input. 
-if [[ ! -z "${CONSTRAINED}" ]]; then|
+if [[ ! -z "${CONSTRAINED}" ]]; then
 	cargo run --release --bin beacon_constrained
 	cargo run --release --bin verify_transform_constrained
 else
