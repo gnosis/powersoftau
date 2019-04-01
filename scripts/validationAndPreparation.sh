@@ -46,6 +46,9 @@ unset NEWESTFILE
 echo "search for files newer than ${DATEOFNEWESTCONTRIBUTION}"
 for f in $FILES
 do
+	if [[  $f=="/" ]]; then
+		continue 
+	fi
 	echo "Processing $f"
 	DATE=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $6}' | sed 's/[^0-9]*//g'`
 	echo "DATE is $DATE"
