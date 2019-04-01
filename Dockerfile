@@ -9,9 +9,11 @@ RUN apt-get update && apt-get -y install cron \
 
 WORKDIR /app
 
-COPY Cargo.toml Cargo.lock ./
-COPY src/. src/.
+COPY Cargo.toml  ./
+RUN mkdir src && touch src/lib.rs && cargo build
 RUN cargo build
+
+COPY src/. src/.
 
 #support for sftp
 EXPOSE 22
@@ -20,8 +22,6 @@ COPY scripts/. scripts/.
 
 #create config file for validation script
 RUN mkdir /app/config
-RUN echo '$LATESTCONTRIBTUIONDATE' > /app/config/lastestContributionDate.txt
-RUN echo '$LATESTCONTRIBUTIONTURN' > /app/config/lastestContributionTurn.txt
 
 
 # Add crontab file in the cron directory
