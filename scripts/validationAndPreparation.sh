@@ -4,29 +4,10 @@ get_all_contributor_files () {
   FILES=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker";cls;bye'`
 
   #no contribution in folder challenges expected
-  FILES=${FILES[@]/challenges/}
+  #FILES=${FILES[@]/challenges/}
   echo "$FILES"
 }
 
-
-#find the newest file in the sftp server and store it in NEWESTFILE
-find_newer_contribution(){
-	DATEOFNEWESTCONTRIBUTION=$1
-	echo 'search for files newer than $DATEOFNEWESTCONTRIBUTION'
-	for f in $FILES
-	do
-		echo "Processing $f"
-		DATE=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $6}' | sed 's/[^0-9]*//g'`
-		echo "DATE is $DATE"
-		if [ $DATE -gt $DATEOFNEWESTCONTRIBUTION ]; then
-			echo "found newer contribution"
-			DATEOFNEWESTCONTRIBUTION=$DATE
-			NEWESTFILE=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $7}'`
-			echo "newest contribution is $NEWESTFILE"
-		fi	
-	done
-	echo "$NEWESTFILE"
-}
 
 
 if [[ -z "${DATEOFNEWESTCONTRIBUTION}" ]]; then
@@ -46,18 +27,18 @@ unset NEWESTFILE
 echo "search for files newer than ${DATEOFNEWESTCONTRIBUTION}"
 for f in $FILES
 do
-	if [[  $f=="/" ]]; then
-		continue 
+	if [[ !  $f == "challenges/" ]]; then
+		echo "Processing $f"
+		DATE=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $6}' | sed 's/[^0-9]*//g'`
+		echo "DATE is $DATE"
+		if [ $DATE -gt $DATEOFNEWESTCONTRIBUTION ]; then
+			echo "found newer contribution"
+			DATEOFNEWESTCONTRIBUTION=$DATE
+			NEWESTFILE=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $7}'`
+			echo "newest contribution is $NEWESTFILE"
+		fi	
 	fi
-	echo "Processing $f"
-	DATE=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $6}' | sed 's/[^0-9]*//g'`
-	echo "DATE is $DATE"
-	if [ $DATE -gt $DATEOFNEWESTCONTRIBUTION ]; then
-		echo "found newer contribution"
-		DATEOFNEWESTCONTRIBUTION=$DATE
-		NEWESTFILE=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $7}'`
-		echo "newest contribution is $NEWESTFILE"
-	fi	
+	
 done
 
 echo "current newest contribution is $NEWESTFILE with the timestamp $DATEOFNEWESTCONTRIBUTION"
@@ -95,5 +76,9 @@ if [[ !  -z "${NEWESTFILE}" ]]; then
 fi
 
 #safe new variables for next execution
-export TRUSTEDSETUPTURN=$TRUSTEDSETUPTURN+1
+export TRUSTEDSETUPTURN=$((TRUSTEDSETUPTURN + 1))
+
+curl -d message="The submission of $NEWESTFILE was successful. The new challenge for the $TRUSTEDSETUPTURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp:trusted-setup.staging.gnosisdev.com:challenges" https://webhooks.gitter.im/e/$KEY_GITTER_TRUSTED_SETUP_ROOM
+
+
 
