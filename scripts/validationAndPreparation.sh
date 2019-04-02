@@ -4,53 +4,50 @@ get_all_contributor_files () {
   FILES=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker";cls;bye'`
 
   #no contribution in folder challenges expected
-  #FILES=${FILES[@]/challenges/}
   echo "$FILES"
 }
 
-
-
-if [[ -z "${DATEOFNEWESTCONTRIBUTION}" ]]; then
-  DATEOFNEWESTCONTRIBUTION=1
+if [[ -z "${DATE_OF_NEWEST_CONTRIBUTION}" ]]; then
+  DATE_OF_NEWEST_CONTRIBUTION=1
 fi
 
-if [[ -z "${TRUSTEDSETUPTURN}" ]]; then
-  TRUSTEDSETUPTURN=1
+if [[ -z "${TRUSTED_SETUP_TURN}" ]]; then
+  TRUSTED_SETUP_TURN=1
 fi
 
 FILES="$(get_all_contributor_files)"
 echo "files are $FILES"
 
-unset NEWESTFILE
+unset NEWEST_CONTRIBUTION
 
-#NEWESTFILE="$(find_newer_contribution $DATEOFNEWESTCONTRIBUTION)"
-echo "search for files newer than ${DATEOFNEWESTCONTRIBUTION}"
+#NEWEST_CONTRIBUTION="$(find_newer_contribution $DATE_OF_NEWEST_CONTRIBUTION)"
+echo "search for files newer than ${DATE_OF_NEWEST_CONTRIBUTION}"
 for f in $FILES
 do
 	if [[ !  $f == "challenges/" ]]; then
 		echo "Processing $f"
 		DATE=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $6}' | sed 's/[^0-9]*//g'`
 		echo "DATE is $DATE"
-		if [ $DATE -gt $DATEOFNEWESTCONTRIBUTION ]; then
+		if [ $DATE -gt $DATE_OF_NEWEST_CONTRIBUTION ]; then
 			echo "found newer contribution"
-			DATEOFNEWESTCONTRIBUTION=$DATE
-			NEWESTFILE=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $7}'`
-			echo "newest contribution is $NEWESTFILE"
+			DATE_OF_NEWEST_CONTRIBUTION=$DATE
+			NEWEST_CONTRIBUTION=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $7}'`
+			echo "newest contribution is $NEWEST_CONTRIBUTION"
 		fi	
 	fi
 	
 done
 
-echo "current newest contribution is $NEWESTFILE with the timestamp $DATEOFNEWESTCONTRIBUTION"
+echo "current newest contribution is $NEWEST_CONTRIBUTION with the timestamp $DATE_OF_NEWEST_CONTRIBUTION"
 
 #safe date of newest contribution so that files are not verified twice
-export DATEOFNEWESTCONTRIBUTION=$DATEOFNEWESTCONTRIBUTION 
+export DATE_OF_NEWEST_CONTRIBUTION=$DATE_OF_NEWEST_CONTRIBUTION 
 
 #If a new contribution is found, do verification and preparation for next step
-if [[ !  -z "${NEWESTFILE}" ]]; then
+if [[ !  -z "${NEWEST_CONTRIBUTION}" ]]; then
 	cd /app/
 	echo "starting download; this could take a while..."
-	sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:$NEWESTFILE /app/.
+	sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:$NEWEST_CONTRIBUTION /app/.
 
 	echo "verifying the submission; this could take a while..."
 	if [[ ! -z "${CONSTRAINED}" ]]; then
@@ -61,13 +58,13 @@ if [[ !  -z "${NEWESTFILE}" ]]; then
 
 	echo "uploading to ftp server and documentation; this could take a while..."
 	mv new_challenge challenge
-	mv response "response-$TRUSTEDSETUPTURN"
+	mv response "response-$TRUSTED_SETUP_TURN"
 	
 	#upload new challenge file for next candiate
 	echo "put challenge" | sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:challenges
 
 	#document response from previous participant
-	echo "put response-$TRUSTEDSETUPTURN" | sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:challenges
+	echo "put response-$TRUSTED_SETUP_TURN" | sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:challenges
 
 	#document new challenge file
 	TIME=$(date +%s.%N)
@@ -76,9 +73,9 @@ if [[ !  -z "${NEWESTFILE}" ]]; then
 fi
 
 #safe new variables for next execution
-export TRUSTEDSETUPTURN=$((TRUSTEDSETUPTURN + 1))
+export TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1))
 
-curl -d message="The submission of $NEWESTFILE was successful. The new challenge for the $TRUSTEDSETUPTURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp:trusted-setup.staging.gnosisdev.com:challenges" https://webhooks.gitter.im/e/$KEY_GITTER_TRUSTED_SETUP_ROOM
+curl -d message="The submission of $NEWEST_CONTRIBUTION was successful. The new challenge for the $TRUSTED_SETUP_TURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp:trusted-setup.staging.gnosisdev.com:challenges" https://webhooks.gitter.im/e/$KEY_GITTER_TRUSTED_SETUP_ROOM
 
 
 
