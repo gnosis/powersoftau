@@ -75,7 +75,5 @@ fi
 #safe new variables for next execution
 export TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1))
 
-curl -d message="The submission of $NEWEST_CONTRIBUTION was successful. The new challenge for the $TRUSTED_SETUP_TURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp:trusted-setup.staging.gnosisdev.com:challenges" https://webhooks.gitter.im/e/$KEY_GITTER_TRUSTED_SETUP_ROOM
-
 
 
