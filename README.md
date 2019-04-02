@@ -55,14 +55,21 @@ For starting the docker, just run:
  docker build --tag=valdiation_worker .
  docker run -it -v ~/.ssh/:/root/.ssh -e CONSTRAINED=true -e DATE_OF_NEWEST_CONTRIBUTION=1 -e TRUSTED_SETUP_TURN=1 -e MAKEFIRSTCONTRIBUTION=yes valdiation_worker  bash 
 ```
-The log outputs can be found of the cron jobs can be found here:
+Once logged into the docker, the following scripts are helpful:
 ```bash
-/var/log/cron.log
-```
-Sometimes cron takes a while to start the first service, then just type cron
-```bash
+#setting up env variables for cron job
+printenv | sed 's/^\(.*\)$/export \1/g' > /root/project_env.sh
+#changing size of trusted setup(for testing only)
+sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 8;/g' /app/src/bn256/mod.rs
+sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 8;/g' /app/src/small_bn256/mod.rs
+#Make the first inital generation and upload it to the server
+. scripts/initial_setup.sh 
+#starting cron
 cron
+#see logs of cron job
+nano /var/log/cron.log
 ```
+
 
 ## License
 

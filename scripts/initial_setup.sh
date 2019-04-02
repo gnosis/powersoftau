@@ -7,7 +7,7 @@ cd /app/
 rm challenge
 rm response
 rm new_challenge
-
+set -e 
 if [[ ! -z "${CONSTRAINED}" ]]; then
 		cargo run --release --bin new_constrained
 	else

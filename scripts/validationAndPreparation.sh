@@ -19,6 +19,8 @@ fi
 FILES="$(get_all_contributor_files)"
 echo "files are $FILES"
 
+set -e 
+
 unset NEWEST_CONTRIBUTION
 
 #searching for newest contribution 
@@ -41,8 +43,8 @@ done
 echo "current newest contribution is $NEWEST_CONTRIBUTION with the timestamp $DATE_OF_NEWEST_CONTRIBUTION"
 
 #safe date of newest contribution so that files are not verified twice
-export DATE_OF_NEWEST_CONTRIBUTION=$DATE_OF_NEWEST_CONTRIBUTION 
-echo "export DATE_OF_NEWEST_CONTRIBUTION=$DATE_OF_NEWEST_CONTRIBUTION " >> /root/project_env.sh
+export DATE_OF_NEWEST_CONTRIBUTION=$DATE_OF_NEWEST_CONTRIBUTION #used for easy testing with source command
+echo "export DATE_OF_NEWEST_CONTRIBUTION=$DATE_OF_NEWEST_CONTRIBUTION " >> /root/project_env.sh #used for env export with cron job
 
 #If a new contribution is found, do verification and preparation for next step
 if [[ !  -z "${NEWEST_CONTRIBUTION}" ]]; then
@@ -74,8 +76,8 @@ if [[ !  -z "${NEWEST_CONTRIBUTION}" ]]; then
 fi
 
 #safe new variables for next execution
-export TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1))
-echo "export TRUSTED_SETUP_TURN=$TRUSTED_SETUP_TURN " >> /root/project_env.sh
+export TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1)) #used for easy testing with source command
+echo "export TRUSTED_SETUP_TURN=$TRUSTED_SETUP_TURN " >> /root/project_env.sh #used for env export with cron job
 curl -d message="The submission of $NEWEST_CONTRIBUTION was successful. The new challenge for the $TRUSTED_SETUP_TURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp:trusted-setup.staging.gnosisdev.com:challenges" https://webhooks.gitter.im/e/$KEY_GITTER_TRUSTED_SETUP_ROOM
 
 

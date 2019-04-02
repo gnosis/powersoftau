@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e 
 ##Procedure -last setup:
 
 #Server runs the beacon step with tbd beacon input. 

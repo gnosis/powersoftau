@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e 
 ## checks that the processes running is not bigger than 5. If so, then the server is still validating
 AMOUNT_OF_PROCESSES_RUNNING=$(ps -ef | wc -l)
 echo "Nr. of processes running: $AMOUNT_OF_PROCESSES_RUNNING"
