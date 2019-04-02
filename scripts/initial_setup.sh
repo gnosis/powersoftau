@@ -23,7 +23,7 @@ TIME=$(date +%s.%N)
 cp challenge "challenge-$TIME"
 echo "put challenge-$TIME" | sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:challenges
 
-curl -d message="The cermeony starts. The first challenge was uploaded here: sftp:trusted-setup.staging.gnosisdev.com:challenges" https://webhooks.gitter.im/e/$KEY_GITTER_TRUSTED_SETUP_ROOM
+curl -d message="The ceremony is ready to get started! The first challenge was uploaded here: sftp:trusted-setup.staging.gnosisdev.com:challenges" https://webhooks.gitter.im/e/$KEY_GITTER_TRUSTED_SETUP_ROOM
 
 #optional first computation
 if [[ ! -z "${MAKEFIRSTCONTRIBUTION}" ]]; then
