@@ -43,3 +43,7 @@ condition="$TRUSTED_SETUP_TURN -ge 1"
 
 LINENO="Contribution turn not adjusted"
 assert "$condition" $LINENO
+
+#reseting values
+sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 26;/g' /app/src/bn256/mod.rs
+sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 26;/g' /app/src/small_bn256/mod.rs

@@ -1,12 +1,5 @@
 #!/bin/bash
-alias connect_server="sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com"
-
-get_all_contributor_files () {
-  FILES=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker";cls;bye'`
-
-  #no contribution in folder challenges expected
-  echo "$FILES"
-}
+alias connect_server='sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com'
 
 if [[ -z "${DATE_OF_NEWEST_CONTRIBUTION}" ]]; then
   DATE_OF_NEWEST_CONTRIBUTION=1
@@ -16,41 +9,24 @@ if [[ -z "${TRUSTED_SETUP_TURN}" ]]; then
   TRUSTED_SETUP_TURN=1
 fi
 
-FILES="$(get_all_contributor_files)"
-echo "files are $FILES"
-
 set -e 
 
-unset NEWEST_CONTRIBUTION
+NEWEST_CONTRIBUTION=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e "set sftp:connect-program \"ssh -a -x -i ~/.ssh/id_rsa_worker\"; find -l | grep \"response$\" | sort -k4 | tail -1; bye"`
+NEWEST_CONTRIBUTION_DATE=`echo "$NEWEST_CONTRIBUTION" | awk '{print $4 $5}' | sed 's/[^0-9]*//g'`
+NEWEST_CONTRIBUTION_NAME=`echo "$NEWEST_CONTRIBUTION" | awk '{print $6}'`
+NEWEST_CONTRIBUTION_NAME=${NEWEST_CONTRIBUTION_NAME:2}
+if [ $NEWEST_CONTRIBUTION_DATE -gt $DATE_OF_NEWEST_CONTRIBUTION ]; then
+				
+	echo "current newest contribution is $NEWEST_CONTRIBUTION_NAME with the time $NEWEST_CONTRIBUTION_DATE"
 
-#searching for newest contribution 
-echo "search for files newer than ${DATE_OF_NEWEST_CONTRIBUTION}"
-for f in $FILES
-do
-	if [ !  "$f" == "challenges/" ]; then
-		echo "Processing $f"
-		FILE_CREATION_TIMESTAMP=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $6}' | sed 's/[^0-9]*//g'`
-		echo "FILE_CREATION_TIMESTAMP is $FILE_CREATION_TIMESTAMP"
-		if [ $FILE_CREATION_TIMESTAMP -gt $DATE_OF_NEWEST_CONTRIBUTION ]; then
-			DATE_OF_NEWEST_CONTRIBUTION=$FILE_CREATION_TIMESTAMP
-			NEWEST_CONTRIBUTION=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $7}'`
-			echo "Found newer contribution: newest contribution is $NEWEST_CONTRIBUTION"
-		fi	
-	fi
-	
-done
+	#safe date of newest contribution so that files are not verified twice
+	export DATE_OF_NEWEST_CONTRIBUTION=$NEWEST_CONTRIBUTION_DATE #used for easy testing with source command
+	echo "export DATE_OF_NEWEST_CONTRIBUTION=$NEWEST_CONTRIBUTION_DATE " >> /root/project_env.sh #used for env export with cron job
 
-echo "current newest contribution is $NEWEST_CONTRIBUTION with the timestamp $DATE_OF_NEWEST_CONTRIBUTION"
-
-#safe date of newest contribution so that files are not verified twice
-export DATE_OF_NEWEST_CONTRIBUTION=$DATE_OF_NEWEST_CONTRIBUTION #used for easy testing with source command
-echo "export DATE_OF_NEWEST_CONTRIBUTION=$DATE_OF_NEWEST_CONTRIBUTION " >> /root/project_env.sh #used for env export with cron job
-
-#If a new contribution is found, do verification and preparation for next step
-if [[ !  -z "${NEWEST_CONTRIBUTION}" ]]; then
+	#If a new contribution is found, do verification and preparation for next round
 	cd /app/
 	echo "starting download; this could take a while..."
-	sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:$NEWEST_CONTRIBUTION /app/.
+	sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:$NEWEST_CONTRIBUTION_NAME /app/.
 
 	echo "verifying the submission; this could take a while..."
 	if [[ ! -z "${CONSTRAINED}" ]]; then
@@ -73,12 +49,14 @@ if [[ !  -z "${NEWEST_CONTRIBUTION}" ]]; then
 	TIME=$(date +%s.%N)
 	cp challenge "challenge-$TIME"
 	echo "put challenge-$TIME" | sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:challenges
+
+
+	#safe new variables for next execution
+	export TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1)) #used for easy testing with source command
+	echo "export TRUSTED_SETUP_TURN=$TRUSTED_SETUP_TURN " >> /root/project_env.sh #used for env export with cron job
+	curl -d message="The submission of $NEWEST_CONTRIBUTION was successful. The new challenge for the $TRUSTED_SETUP_TURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp:trusted-setup.staging.gnosisdev.com:challenges" https://webhooks.gitter.im/e/$KEY_GITTER_TRUSTED_SETUP_ROOM
+else
+	echo "Newest contribution was created at $NEWEST_CONTRIBUTION_DATE and is not newer than $DATE_OF_NEWEST_CONTRIBUTION"
 fi
-
-#safe new variables for next execution
-export TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1)) #used for easy testing with source command
-echo "export TRUSTED_SETUP_TURN=$TRUSTED_SETUP_TURN " >> /root/project_env.sh #used for env export with cron job
-curl -d message="The submission of $NEWEST_CONTRIBUTION was successful. The new challenge for the $TRUSTED_SETUP_TURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp:trusted-setup.staging.gnosisdev.com:challenges" https://webhooks.gitter.im/e/$KEY_GITTER_TRUSTED_SETUP_ROOM
-
 
 
