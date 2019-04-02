@@ -1,6 +1,5 @@
 #!/bin/bash
-
-alias connet_server="sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com"
+alias connect_server="sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com"
 
 get_all_contributor_files () {
   FILES=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker";cls;bye'`
@@ -26,7 +25,7 @@ unset NEWEST_CONTRIBUTION
 echo "search for files newer than ${DATE_OF_NEWEST_CONTRIBUTION}"
 for f in $FILES
 do
-	if [[ !  $f == "challenges/" ]]; then
+	if [ !  "$f" == "challenges/" ]; then
 		echo "Processing $f"
 		FILE_CREATION_TIMESTAMP=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e 'set sftp:connect-program "ssh -a -x -i /root/.ssh/id_rsa_worker"; cls -l --time-style=%FT%T '$f'/* --sort=date | head -1; bye' | awk '{print $6}' | sed 's/[^0-9]*//g'`
 		echo "FILE_CREATION_TIMESTAMP is $FILE_CREATION_TIMESTAMP"
@@ -43,12 +42,13 @@ echo "current newest contribution is $NEWEST_CONTRIBUTION with the timestamp $DA
 
 #safe date of newest contribution so that files are not verified twice
 export DATE_OF_NEWEST_CONTRIBUTION=$DATE_OF_NEWEST_CONTRIBUTION 
+echo "export DATE_OF_NEWEST_CONTRIBUTION=$DATE_OF_NEWEST_CONTRIBUTION " >> /root/project_env.sh
 
 #If a new contribution is found, do verification and preparation for next step
 if [[ !  -z "${NEWEST_CONTRIBUTION}" ]]; then
 	cd /app/
 	echo "starting download; this could take a while..."
-	connet_server:$NEWEST_CONTRIBUTION /app/.
+	sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:$NEWEST_CONTRIBUTION /app/.
 
 	echo "verifying the submission; this could take a while..."
 	if [[ ! -z "${CONSTRAINED}" ]]; then
@@ -75,7 +75,7 @@ fi
 
 #safe new variables for next execution
 export TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1))
-
+echo "export TRUSTED_SETUP_TURN=$TRUSTED_SETUP_TURN " >> /root/project_env.sh
 curl -d message="The submission of $NEWEST_CONTRIBUTION was successful. The new challenge for the $TRUSTED_SETUP_TURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp:trusted-setup.staging.gnosisdev.com:challenges" https://webhooks.gitter.im/e/$KEY_GITTER_TRUSTED_SETUP_ROOM
 
 

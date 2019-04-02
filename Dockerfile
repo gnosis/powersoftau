@@ -42,3 +42,6 @@ RUN touch /var/log/cron.log
 # Run the command on container startup
 CMD ["cron", "-f"]
 
+#print env\s to make them available for docker
+RUN printenv | sed 's/^\(.*\)$/export \1/g' > /root/project_env.sh
+
