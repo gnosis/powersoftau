@@ -7,6 +7,8 @@ RUN apt-get update && apt-get -y install cron \
  				lftp \
 				nano 
 
+RUN rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 COPY Cargo.toml  ./
@@ -14,11 +16,12 @@ RUN mkdir src && touch src/lib.rs && cargo build
 RUN cargo build
 
 COPY src/. src/.
+COPY scripts/. scripts/.
+COPY test/. test/.
 
 #support for sftp
 EXPOSE 22
 
-COPY scripts/. scripts/.
 
 #create config file for validation script
 RUN mkdir /app/config
