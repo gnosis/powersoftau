@@ -53,7 +53,8 @@ It is totally up to the participants. In general, participants should beware of 
 For starting the docker, just run:
 ```bash
  docker build --tag=valdiation_worker .
- docker run -it -v ~/.ssh/:/root/.ssh -e CONSTRAINED=true -e DATE_OF_NEWEST_CONTRIBUTION=1 -e TRUSTED_SETUP_TURN=1 -e MAKEFIRSTCONTRIBUTION=yes valdiation_worker  bash 
+ docker run -it -v ~/.ssh/:/root/.ssh -e CONSTRAINED=true -e SSH_FILE=id_rsa_worker -e SSH_USER=validation_worker
+-e DATE_OF_NEWEST_CONTRIBUTION=1 -e TRUSTED_SETUP_TURN=1 -e MAKEFIRSTCONTRIBUTION=yes valdiation_worker  bash 
 ```
 Once logged into the docker, the following scripts are helpful:
 ```bash

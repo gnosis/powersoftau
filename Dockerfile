@@ -11,9 +11,10 @@ RUN rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
+ADD Cargo.toml .cache/target_cache.tar.gz* ./
 COPY Cargo.toml  ./
 RUN mkdir src && touch src/lib.rs && cargo build
-RUN cargo build
+
 
 COPY src/. src/.
 COPY scripts/. scripts/.
@@ -22,10 +23,10 @@ COPY test/. test/.
 #support for sftp
 EXPOSE 22
 
+RUN touch /root/forever.pid
 
 #create config file for validation script
 RUN mkdir /app/config
-
 
 # Add crontab file in the cron directory
 ADD tasks/cron-task /etc/cron.d/hello-cron

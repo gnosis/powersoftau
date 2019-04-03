@@ -1,5 +1,5 @@
 #!/bin/bash
-alias connect_server='sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com'
+connect_to_sftp_server="sftp -i /root/.ssh/$SSH_FILE $SSH_USER@trusted-setup.staging.gnosisdev.com"
 
 if [[ -z "${DATE_OF_NEWEST_CONTRIBUTION}" ]]; then
   DATE_OF_NEWEST_CONTRIBUTION=1
@@ -11,7 +11,7 @@ fi
 
 set -e 
 
-NEWEST_CONTRIBUTION=`lftp sftp://validationworker:@trusted-setup.staging.gnosisdev.com -e "set sftp:connect-program \"ssh -a -x -i ~/.ssh/id_rsa_worker\"; find -l | grep \"response$\" | sort -k4 | tail -1; bye"`
+NEWEST_CONTRIBUTION=`lftp sftp://"$SSH_USER":@trusted-setup.staging.gnosisdev.com -e "set sftp:connect-program \"ssh -a -x -i ~/.ssh/$SSH_FILE\"; find -l | grep \"response$\" | sort -k4 | tail -1; bye"`
 NEWEST_CONTRIBUTION_DATE=`echo "$NEWEST_CONTRIBUTION" | awk '{print $4 $5}' | sed 's/[^0-9]*//g'`
 NEWEST_CONTRIBUTION_NAME=`echo "$NEWEST_CONTRIBUTION" | awk '{print $6}'`
 NEWEST_CONTRIBUTION_NAME=${NEWEST_CONTRIBUTION_NAME:2}
@@ -26,7 +26,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $DATE_OF_NEWEST_CONTRIBUTION ]; then
 	#If a new contribution is found, do verification and preparation for next round
 	cd /app/
 	echo "starting download; this could take a while..."
-	sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:$NEWEST_CONTRIBUTION_NAME /app/.
+	$connect_to_sftp_server:$NEWEST_CONTRIBUTION_NAME /app/.
 
 	echo "verifying the submission; this could take a while..."
 	if [[ ! -z "${CONSTRAINED}" ]]; then
@@ -40,15 +40,15 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $DATE_OF_NEWEST_CONTRIBUTION ]; then
 	mv response "response-$TRUSTED_SETUP_TURN"
 	
 	#upload new challenge file for next candiate
-	echo "put challenge" | sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:challenges
+	echo "put challenge" | $connect_to_sftp_server:challenges
 
 	#document response from previous participant
-	echo "put response-$TRUSTED_SETUP_TURN" | sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:challenges
+	echo "put response-$TRUSTED_SETUP_TURN" | $connect_to_sftp_server:challenges
 
 	#document new challenge file
 	TIME=$(date +%s.%N)
 	cp challenge "challenge-$TIME"
-	echo "put challenge-$TIME" | sftp -i /root/.ssh/id_rsa_worker validationworker@trusted-setup.staging.gnosisdev.com:challenges
+	echo "put challenge-$TIME" | $connect_to_sftp_server:challenges
 
 
 	#safe new variables for next execution
