@@ -1,9 +1,12 @@
 #!/bin/bash
 
-##Setup:
+##Setup:#storing ssh key in folders for easier access:
+echo "$SSH_PRIVATE_KEY" > /root/.ssh/id_rsa_validation_worker
+chmod 600 /root/.ssh/id_rsa_validation_worker
+echo "$SSH_PUBLIC_KEY" > /root/.ssh/id_rsa_validation_worker.pub
 
 cd /app/
-connect_to_sftp_server="sftp -i /root/.ssh/$SSH_FILE $SSH_USER@trusted-setup.staging.gnosisdev.com"
+connect_to_sftp_server="sftp -i /root/.ssh/id_rsa_validation_worker -o StrictHostKeyChecking=no $SSH_USER@$SFTP_ADDRESS"
 
 # First a new ceremony setup is created via:
 rm challenge
@@ -34,5 +37,5 @@ if [[ ! -z "${MAKEFIRSTCONTRIBUTION}" ]]; then
 		cargo run --release --bin compute
 	fi
 	# Change to user worker and put into top level folder instead to josojo:
-	echo "put response" | $connect_to_sftp_server:validationworkertest
+	echo "put response" | $connect_to_sftp_server:$SSH_USER
 fi

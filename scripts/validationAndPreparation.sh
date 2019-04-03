@@ -1,5 +1,9 @@
 #!/bin/bash
-connect_to_sftp_server="sftp -i /root/.ssh/$SSH_FILE $SSH_USER@trusted-setup.staging.gnosisdev.com"
+connect_to_sftp_server="sftp -i /root/.ssh/id_rsa_validation_worker -o StrictHostKeyChecking=no $SSH_USER@$SFTP_ADDRESS"
+#storing ssh key in folders for easier access
+echo "$SSH_PRIVATE_KEY" > /root/.ssh/id_rsa_validation_worker
+chmod 600 /root/.ssh/id_rsa_validation_worker
+echo "$SSH_PUBLIC_KEY" > /root/.ssh/id_rsa_validation_worker.pub
 
 if [[ -z "${DATE_OF_NEWEST_CONTRIBUTION}" ]]; then
   DATE_OF_NEWEST_CONTRIBUTION=1
@@ -11,7 +15,7 @@ fi
 
 set -e 
 
-NEWEST_CONTRIBUTION=`lftp sftp://"$SSH_USER":@trusted-setup.staging.gnosisdev.com -e "set sftp:connect-program \"ssh -a -x -i ~/.ssh/$SSH_FILE\"; find -l | grep \"response$\" | sort -k4 | tail -1; bye"`
+NEWEST_CONTRIBUTION=`lftp sftp://"$SSH_USER":@"$SFTP_ADDRESS" -e "set sftp:connect-program \"ssh -a -x -i ~/.ssh/id_rsa_validation_worker\"; find -l | grep \"response$\" | sort -k4 | tail -1; bye"`
 NEWEST_CONTRIBUTION_DATE=`echo "$NEWEST_CONTRIBUTION" | awk '{print $4 $5}' | sed 's/[^0-9]*//g'`
 NEWEST_CONTRIBUTION_NAME=`echo "$NEWEST_CONTRIBUTION" | awk '{print $6}'`
 NEWEST_CONTRIBUTION_NAME=${NEWEST_CONTRIBUTION_NAME:2}

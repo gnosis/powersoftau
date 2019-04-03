@@ -25,11 +25,14 @@ Every participant needs to create a ssh key. For help see [here](https://conflue
 3. Download the repository
 	git clone git@github.com:matterinc/powersoftau.git
 	and copy it to your dedicated computer.
-4. Performany some of the recommendated steps for ceremony from the next section.	
+4. Perform some of the recommended steps for ceremony from the next section.	
 5. Then do the acutal computation:
 	 cargo run --release --bin compute
 6. Broadcast your contribution hash via twitter or your preferred social media account. 
-7. Upload the response file to ftp-server.  
+7. Upload the 'response' file to ftp-server via Filezilla or:
+```bash
+echo "put response" | sftp -i ~/.ssh/id_rsa  your_user_name@trusted-setup.gnosis.pm:your_user_name
+```  
 
 ## Recommendations from original ceremony
 
@@ -52,9 +55,10 @@ It is totally up to the participants. In general, participants should beware of 
 
 For starting the docker, just run:
 ```bash
- docker build --tag=valdiation_worker .
- docker run -it -v ~/.ssh/:/root/.ssh -e CONSTRAINED=true -e SSH_FILE=id_rsa_worker -e SSH_USER=validation_worker
--e DATE_OF_NEWEST_CONTRIBUTION=1 -e TRUSTED_SETUP_TURN=1 -e MAKEFIRSTCONTRIBUTION=yes valdiation_worker  bash 
+ docker build --tag=validation_worker .
+ docker run -it -v ~/.ssh/:/root/.ssh -e CONSTRAINED=true 
+ -e SSH_PRIVATE_KEY=<private key> -e SSH_PUBLIC_KEY=<public key>
+ -e SSH_USER=validationworker -e SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com -e DATE_OF_NEWEST_CONTRIBUTION=1 -e TRUSTED_SETUP_TURN=1 -e MAKEFIRSTCONTRIBUTION=yes -e KEY_GITTER_TRUSTED_SETUP_ROOM=2ae0b8adf55e84b3bd41 validation_worker bash
 ```
 Once logged into the docker, the following scripts are helpful:
 ```bash

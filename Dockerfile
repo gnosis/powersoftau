@@ -46,3 +46,7 @@ CMD ["cron", "-f"]
 #print env\s to make them available for docker
 RUN printenv | sed 's/^\(.*\)$/export \1/g' > /root/project_env.sh
 
+RUN mkdir /root/.ssh
+RUN touch /root/.ssh/id_rsa_validation_worker
+RUN touch /root/.ssh/id_rsa_validation_worker.pub
+

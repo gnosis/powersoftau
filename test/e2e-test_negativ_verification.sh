@@ -37,8 +37,7 @@ sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize
 printf 'entropyForSolutionGeneration' | source /app/scripts/initial_setup.sh
 touch response 
 echo "safsdf" >> response
-less response
-echo "put response" | $connect_to_sftp_server:test_user
+echo "put response" | $connect_to_sftp_server:$SSH_USER
 
 source /app/scripts/validationAndPreparation.sh
 

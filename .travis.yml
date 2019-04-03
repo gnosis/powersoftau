@@ -1,0 +1,6 @@
+language: rust
+rust:
+  - stable
+
+script:
+    - source test/e2e-test_positive_verification.sh
