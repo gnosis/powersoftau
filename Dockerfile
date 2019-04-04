@@ -37,11 +37,11 @@ RUN crontab /etc/cron.d/hello-cron
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
 
-# Run the command on container startup
-CMD ["cron", "-f"]
-
 #print env\s to make them available for docker
 RUN printenv | sed 's/^\(.*\)$/export \1/g' > /root/project_env.sh
+
+# Run the command on container startup
+CMD ["cron", "-f"]
 
 RUN mkdir /root/.ssh
 

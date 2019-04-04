@@ -5,15 +5,17 @@ connect_to_sftp_server="sftp -i /root/.ssh/id_rsa_worker -o StrictHostKeyCheckin
 
 if [[ -z "${THRESHOLD_DATE_FOR_FILE_ACCEPTANCE}" ]]; then
   echo "THRESHOLD_DATE_FOR_FILE_ACCEPTANCE should be set"
+  exit 1
 fi
 
 if [[ -z "${TRUSTED_SETUP_TURN}" ]]; then
   echo "TRUSTED_SETUP_TURN should be set"
+  exit 1
 fi
 
 set -e 
 
-NEWEST_CONTRIBUTION=`lftp sftp://"$SSH_USER":@"$SFTP_ADDRESS" -e "set sftp:connect-program \"ssh -a -x -i ~/.ssh/id_rsa_worker\"; find -l | grep \"response$\" | sort -k4 | tail -1; bye"`
+NEWEST_CONTRIBUTION=`lftp sftp://"$SSH_USER":@"$SFTP_ADDRESS" -e "set sftp:connect-program \"ssh -a -x -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa_worker\"; find -l | grep \"response$\" | sort -k4 | tail -1; bye"`
 NEWEST_CONTRIBUTION_DATE=`echo "$NEWEST_CONTRIBUTION" | awk '{print $4 $5}' | sed 's/[^0-9]*//g'`
 NEWEST_CONTRIBUTION_NAME=`echo "$NEWEST_CONTRIBUTION" | awk '{print $6}'`
 NEWEST_CONTRIBUTION_NAME=${NEWEST_CONTRIBUTION_NAME:2}
@@ -55,7 +57,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 
 	#safe new variables for next execution
 	export TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1)) #used for easy testing with source command
-	echo "export TRUSTED_SETUP_TURN=$TRUSTED_SETUP_TURN " >> /root/project_env.sh #used for env export with cron job
+	sed -i "s/export TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1))/export TRUSTED_SETUP_TURN=$TRUSTED_SETUP_TURN/g" /root/project_env.sh
 	curl -d message="The submission of $NEWEST_CONTRIBUTION was successful. The new challenge for the $TRUSTED_SETUP_TURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp:trusted-setup.staging.gnosisdev.com:challenges" https://webhooks.gitter.im/e/$KEY_GITTER_TRUSTED_SETUP_ROOM
 else
 	echo "Newest contribution was created at $NEWEST_CONTRIBUTION_DATE and is not newer than $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE"
