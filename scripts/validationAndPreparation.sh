@@ -1,7 +1,5 @@
 #!/bin/bash
-chmod 600 /root/.ssh/id_rsa_worker
-connect_to_sftp_server="sftp -i /root/.ssh/id_rsa_worker -o StrictHostKeyChecking=no $SSH_USER@$SFTP_ADDRESS"
-
+. load_env_sshkey.sh
 
 if [[ -z "${THRESHOLD_DATE_FOR_FILE_ACCEPTANCE}" ]]; then
   echo "THRESHOLD_DATE_FOR_FILE_ACCEPTANCE should be set"
@@ -24,8 +22,8 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 	echo "current newest contribution is $NEWEST_CONTRIBUTION_NAME with the time $NEWEST_CONTRIBUTION_DATE"
 
 	#safe date of newest contribution so that files are not verified twice
-	export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=$NEWEST_CONTRIBUTION_DATE #used for easy testing with source command
-	sed -i "s/export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=.*/export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=$THRESHOLD_DATE_FOR_FILE_ACCEPTANCE/g" /root/project_env.sh
+	THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=$NEWEST_CONTRIBUTION_DATE #used for easy testing with source command
+	sed -i "s/export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=.*/export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=$THRESHOLD_DATE_FOR_FILE_ACCEPTANCE/g" /app/variables.sh
 
 	#If a new contribution is found, do verification and preparation for next round
 	cd /app/
@@ -56,8 +54,10 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 
 
 	#safe new variables for next execution
-	export TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1)) #used for easy testing with source command
-	sed -i "s/export TRUSTED_SETUP_TURN=.*/export TRUSTED_SETUP_TURN=$TRUSTED_SETUP_TURN/g" /root/project_env.sh
+	TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1)) #used for easy testing with source command
+	sed -i "s/export TRUSTED_SETUP_TURN=.*/export TRUSTED_SETUP_TURN=$TRUSTED_SETUP_TURN/g" /app/variables.sh
+	
+	#Post a message in Gitter:
 	curl -d message="The submission of $NEWEST_CONTRIBUTION was successful. The new challenge for the $TRUSTED_SETUP_TURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp:trusted-setup.staging.gnosisdev.com:challenges" https://webhooks.gitter.im/e/$KEY_GITTER_TRUSTED_SETUP_ROOM
 else
 	echo "Newest contribution was created at $NEWEST_CONTRIBUTION_DATE and is not newer than $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE"

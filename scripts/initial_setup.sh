@@ -1,7 +1,6 @@
 #!/bin/bash
-chmod 600 /root/.ssh/id_rsa_worker
+. load_env_sshkey.sh
 cd /app/
-connect_to_sftp_server="sftp -i /root/.ssh/id_rsa_worker -o StrictHostKeyChecking=no $SSH_USER@$SFTP_ADDRESS"
 
 # First a new ceremony setup is created via:
 rm challenge
