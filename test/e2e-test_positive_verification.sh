@@ -34,7 +34,7 @@ sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize
 sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 8;/g' /app/src/small_bn256/mod.rs
 
 printf 'entropyForSolutionGeneration' | source /app/scripts/initial_setup.sh
-if [ source /app/scripts/validationAndPreparation.sh
+source /app/scripts/validationAndPreparation.sh
 
 condition="$THRESHOLD_DATE_FOR_FILE_ACCEPTANCE -ge 1"
 LINENO="Contribution date not adjusted"

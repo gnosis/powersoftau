@@ -15,7 +15,6 @@ COPY Cargo.toml  ./
 RUN mkdir src && touch src/lib.rs && cargo build
 
 COPY src/. src/.
-COPY scripts/. scripts/.
 COPY test/. test/.
 
 #support for sftp
@@ -45,4 +44,6 @@ CMD ["cron", "-f"]
 RUN printenv | sed 's/^\(.*\)$/export \1/g' > /root/project_env.sh
 
 RUN mkdir /root/.ssh
+
+COPY scripts/. scripts/.
 
