@@ -1,9 +1,6 @@
 #!/bin/bash
 
-##Setup:#storing ssh key in folders for easier access:
-echo "$SSH_PRIVATE_KEY" > /root/.ssh/id_rsa_validation_worker
-chmod 600 /root/.ssh/id_rsa_validation_worker
-echo "$SSH_PUBLIC_KEY" > /root/.ssh/id_rsa_validation_worker.pub
+. /app/scripts/set_ssh_files.sh
 
 cd /app/
 connect_to_sftp_server="sftp -i /root/.ssh/id_rsa_validation_worker -o StrictHostKeyChecking=no $SSH_USER@$SFTP_ADDRESS"

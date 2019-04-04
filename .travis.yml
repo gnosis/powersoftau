@@ -2,5 +2,15 @@ language: rust
 rust:
   - stable
 
+services:
+  - docker
+
+before_install:
+  - docker build --tag=validation_worker .
+
 script:
-    - source test/e2e-test_positive_verification.sh
+    -  docker run -it -e CONSTRAINED=true -e SSH_PRIVATE_KEY=$SSH_PRIVATE_KEY -e SSH_PUBLIC_KEY=$SSH_PUBLIC_KEY \
+-e SSH_USER=validationworker -e SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com \
+-e DATE_OF_NEWEST_CONTRIBUTION=1 -e TRUSTED_SETUP_TURN=1 -e MAKEFIRSTCONTRIBUTION=yes \
+-e KEY_GITTER_TRUSTED_SETUP_ROOM=$KEY_GITTER_TRUSTED_SETUP_ROOM validation_worker \
+bash -c "source test/e2e-test_positive_verification.sh"
