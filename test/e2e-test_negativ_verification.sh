@@ -41,7 +41,7 @@ echo "put response" | $connect_to_sftp_server:$SSH_USER
 
 source /app/scripts/validationAndPreparation.sh
 
-condition="$DATE_OF_NEWEST_CONTRIBUTION -ge 1"
+condition="$THRESHOLD_DATE_FOR_FILE_ACCEPTANCE -ge 1"
 LINENO="Contribution date not adjusted"
 assert "$condition" $LINENO
 

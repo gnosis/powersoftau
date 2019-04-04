@@ -3,12 +3,12 @@ chmod 600 /root/.ssh/id_rsa_worker
 connect_to_sftp_server="sftp -i /root/.ssh/id_rsa_worker -o StrictHostKeyChecking=no $SSH_USER@$SFTP_ADDRESS"
 
 
-if [[ -z "${DATE_OF_NEWEST_CONTRIBUTION}" ]]; then
-  DATE_OF_NEWEST_CONTRIBUTION=1
+if [[ ! -z "${THRESHOLD_DATE_FOR_FILE_ACCEPTANCE}" ]]; then
+  echo "THRESHOLD_DATE_FOR_FILE_ACCEPTANCE should be set"
 fi
 
-if [[ -z "${TRUSTED_SETUP_TURN}" ]]; then
-  TRUSTED_SETUP_TURN=1
+if [[ ! -z "${TRUSTED_SETUP_TURN}" ]]; then
+  echo "TRUSTED_SETUP_TURN should be set"
 fi
 
 set -e 
@@ -17,13 +17,13 @@ NEWEST_CONTRIBUTION=`lftp sftp://"$SSH_USER":@"$SFTP_ADDRESS" -e "set sftp:conne
 NEWEST_CONTRIBUTION_DATE=`echo "$NEWEST_CONTRIBUTION" | awk '{print $4 $5}' | sed 's/[^0-9]*//g'`
 NEWEST_CONTRIBUTION_NAME=`echo "$NEWEST_CONTRIBUTION" | awk '{print $6}'`
 NEWEST_CONTRIBUTION_NAME=${NEWEST_CONTRIBUTION_NAME:2}
-if [ $NEWEST_CONTRIBUTION_DATE -gt $DATE_OF_NEWEST_CONTRIBUTION ]; then
+if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 				
 	echo "current newest contribution is $NEWEST_CONTRIBUTION_NAME with the time $NEWEST_CONTRIBUTION_DATE"
 
 	#safe date of newest contribution so that files are not verified twice
-	export DATE_OF_NEWEST_CONTRIBUTION=$NEWEST_CONTRIBUTION_DATE #used for easy testing with source command
-	echo "export DATE_OF_NEWEST_CONTRIBUTION=$NEWEST_CONTRIBUTION_DATE " >> /root/project_env.sh #used for env export with cron job
+	export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=$NEWEST_CONTRIBUTION_DATE #used for easy testing with source command
+	echo "export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=$NEWEST_CONTRIBUTION_DATE " >> /root/project_env.sh #used for env export with cron job
 
 	#If a new contribution is found, do verification and preparation for next round
 	cd /app/
@@ -58,7 +58,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $DATE_OF_NEWEST_CONTRIBUTION ]; then
 	echo "export TRUSTED_SETUP_TURN=$TRUSTED_SETUP_TURN " >> /root/project_env.sh #used for env export with cron job
 	curl -d message="The submission of $NEWEST_CONTRIBUTION was successful. The new challenge for the $TRUSTED_SETUP_TURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp:trusted-setup.staging.gnosisdev.com:challenges" https://webhooks.gitter.im/e/$KEY_GITTER_TRUSTED_SETUP_ROOM
 else
-	echo "Newest contribution was created at $NEWEST_CONTRIBUTION_DATE and is not newer than $DATE_OF_NEWEST_CONTRIBUTION"
+	echo "Newest contribution was created at $NEWEST_CONTRIBUTION_DATE and is not newer than $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE"
 fi
 
 

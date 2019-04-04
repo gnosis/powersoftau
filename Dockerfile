@@ -1,9 +1,8 @@
 FROM rust:latest
 MAINTAINER alex@gnosis.pm
 
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
-
-RUN apt-get update && apt-get -y install cron \
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils \
+				cron \
  				lftp \
 				nano 
 
@@ -11,10 +10,9 @@ RUN rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-ADD Cargo.toml .cache/target_cache.tar.gz* ./
+ADD Cargo.toml ./
 COPY Cargo.toml  ./
 RUN mkdir src && touch src/lib.rs && cargo build
-
 
 COPY src/. src/.
 COPY scripts/. scripts/.
