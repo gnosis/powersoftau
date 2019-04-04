@@ -18,25 +18,27 @@ before_install:
 - echo "export SSH_USER=validationworker" >> variables.sh
 - chmod 600 ~/id_rsa_worker
 install:
-  - docker build --tag=$DOCKER_TAG .
+  - docker build -t $DOCKER_TAG .
 script:
-- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker validation_worker
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker $DOCKER_TAG
   bash -c "source test/e2e-test_positive_verification.sh"
-after_success:
+after_script:
 - |
   # Create Docker image if branch master and not on pull requests
-  if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-    if [ "$TRAVIS_BRANCH" == "master" ]; then
-      echo "Pushing staging image...";
-      docker tag $DOCKER_TAG gnosispm/$DOCKER_TAG:staging;
-      docker push gnosispm/$DOCKER_TAG:staging;
-    elif [[ $TRAVIS_TAG = $TRAVIS_BRANCH ]]; then
-      echo "Pushing image tag $TRAVIS_TAG...";
-      docker tag $DOCKER_TAG gnosispm/$DOCKER_TAG:$TRAVIS_TAG;
-      docker push gnosispm/$DOCKER_TAG:$TRAVIS_TAG;
+  if [ "$TRAVIS_TEST_RESULT" == "0" ]; then
+    if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+      docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+      if [ "$TRAVIS_BRANCH" == "master" ]; then
+        echo "Pushing staging image...";
+        docker tag $DOCKER_TAG gnosispm/$DOCKER_TAG:staging;
+        docker push gnosispm/$DOCKER_TAG:staging;
+      elif [[ $TRAVIS_TAG = $TRAVIS_BRANCH ]]; then
+        echo "Pushing image tag $TRAVIS_TAG...";
+        docker tag $DOCKER_TAG gnosispm/$DOCKER_TAG:$TRAVIS_TAG;
+        docker push gnosispm/$DOCKER_TAG:$TRAVIS_TAG;
+      fi
+      echo "The image has been pushed";
+    else
+      echo "There's no need to push the image to Docker-hub";
     fi
-    echo "The image has been pushed";
-  else
-    echo "There's no need to push the image to Docker-hub";
   fi
