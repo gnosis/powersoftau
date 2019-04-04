@@ -38,7 +38,7 @@ RUN crontab /etc/cron.d/hello-cron
 RUN touch /var/log/cron.log
 
 #Copy env variables folder for cron job
-COPY variables.sh ./
+COPY ~/variables.sh ./
 
 # Run the command on container startup
 CMD ["cron", "-f"]
