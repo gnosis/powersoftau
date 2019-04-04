@@ -1,4 +1,4 @@
-# Powers of Tau
+# DESTROY
 
 ## Original story
 
