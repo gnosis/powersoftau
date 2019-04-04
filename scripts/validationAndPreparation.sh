@@ -1,7 +1,6 @@
 #!/bin/bash
-connect_to_sftp_server="sftp -i /root/.ssh/id_rsa_validation_worker -o StrictHostKeyChecking=no $SSH_USER@$SFTP_ADDRESS"
+connect_to_sftp_server="sftp -i /root/.ssh/id_rsa_worker -o StrictHostKeyChecking=no $SSH_USER@$SFTP_ADDRESS"
 
-. /app/scripts/set_ssh_files.sh
 
 if [[ -z "${DATE_OF_NEWEST_CONTRIBUTION}" ]]; then
   DATE_OF_NEWEST_CONTRIBUTION=1
@@ -13,7 +12,7 @@ fi
 
 set -e 
 
-NEWEST_CONTRIBUTION=`lftp sftp://"$SSH_USER":@"$SFTP_ADDRESS" -e "set sftp:connect-program \"ssh -a -x -i ~/.ssh/id_rsa_validation_worker\"; find -l | grep \"response$\" | sort -k4 | tail -1; bye"`
+NEWEST_CONTRIBUTION=`lftp sftp://"$SSH_USER":@"$SFTP_ADDRESS" -e "set sftp:connect-program \"ssh -a -x -i ~/.ssh/id_rsa_worker\"; find -l | grep \"response$\" | sort -k4 | tail -1; bye"`
 NEWEST_CONTRIBUTION_DATE=`echo "$NEWEST_CONTRIBUTION" | awk '{print $4 $5}' | sed 's/[^0-9]*//g'`
 NEWEST_CONTRIBUTION_NAME=`echo "$NEWEST_CONTRIBUTION" | awk '{print $6}'`
 NEWEST_CONTRIBUTION_NAME=${NEWEST_CONTRIBUTION_NAME:2}

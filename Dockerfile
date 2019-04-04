@@ -47,6 +47,4 @@ CMD ["cron", "-f"]
 RUN printenv | sed 's/^\(.*\)$/export \1/g' > /root/project_env.sh
 
 RUN mkdir /root/.ssh
-RUN touch /root/.ssh/id_rsa_validation_worker
-RUN touch /root/.ssh/id_rsa_validation_worker.pub
 

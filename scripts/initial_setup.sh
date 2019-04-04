@@ -1,9 +1,7 @@
 #!/bin/bash
 
-. /app/scripts/set_ssh_files.sh
-
 cd /app/
-connect_to_sftp_server="sftp -i /root/.ssh/id_rsa_validation_worker -o StrictHostKeyChecking=no $SSH_USER@$SFTP_ADDRESS"
+connect_to_sftp_server="sftp -i /root/.ssh/id_rsa_worker -o StrictHostKeyChecking=no $SSH_USER@$SFTP_ADDRESS"
 
 # First a new ceremony setup is created via:
 rm challenge
