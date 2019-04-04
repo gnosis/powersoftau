@@ -1,5 +1,5 @@
 #!/bin/bash
-. load_env_sshkey.sh
+. /app/scripts/load_env_sshkey.sh
 
 if [[ -z "${THRESHOLD_DATE_FOR_FILE_ACCEPTANCE}" ]]; then
   echo "THRESHOLD_DATE_FOR_FILE_ACCEPTANCE should be set"

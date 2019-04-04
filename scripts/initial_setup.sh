@@ -1,5 +1,5 @@
 #!/bin/bash
-. load_env_sshkey.sh
+. /app/scripts/load_env_sshkey.sh
 cd /app/
 
 # First a new ceremony setup is created via:
