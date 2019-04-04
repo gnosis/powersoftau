@@ -8,7 +8,7 @@ before_install:
 - chmod 600 ./id_rsa_worker
 - docker build --tag=validation_worker .
 script:
-- docker run -it -v ./id_rsa_worker:/root/.ssh/id_rsa_worker -e CONSTRAINED=true -e
+- docker run -it -v ~/powersoftau/id_rsa_worker:/root/.ssh/id_rsa_worker -e CONSTRAINED=true -e
   SSH_USER=validationworker -e SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com -e
   DATE_OF_NEWEST_CONTRIBUTION=1 -e TRUSTED_SETUP_TURN=1 -e MAKEFIRSTCONTRIBUTION=yes
   -e KEY_GITTER_TRUSTED_SETUP_ROOM=$KEY_GITTER_TRUSTED_SETUP_ROOM validation_worker
