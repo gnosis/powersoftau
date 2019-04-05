@@ -34,6 +34,7 @@ export MAKEFIRSTCONTRIBUTION=yes
 sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 8;/g' /app/src/bn256/mod.rs
 sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 8;/g' /app/src/small_bn256/mod.rs
 
+TURN_BEFORE_TEST=$TRUSTED_SETUP_TURN
 printf 'entropyForSolutionGeneration' | source /app/scripts/initial_setup.sh
 cp /app/response /app/response-temp
 # read 1 byte at offset 40C
@@ -52,7 +53,7 @@ condition="$THRESHOLD_DATE_FOR_FILE_ACCEPTANCE -ge 1"
 LINENO="Contribution date not adjusted"
 assert "$condition" $LINENO
 
-condition="$TRUSTED_SETUP_TURN -le 1"
+condition="$TRUSTED_SETUP_TURN -le $TURN_BEFORE_TEST"
 LINENO="Contribution turn not was adjusted, although upload was invalid"
 assert "$condition" $LINENO
 
