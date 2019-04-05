@@ -20,7 +20,7 @@ script:
 - docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker validation_worker
   bash -c "source test/e2e-test_positive_verification.sh"
 - docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker validation_worker
-  bash -c "source test/source test/e2e-test_negativ_verification.sh"
+  bash -c "source test/e2e-test_negativ_verification.sh"
 - docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker validation_worker
   bash -c "source test/e2e-test_no_new_upload.sh"
 
