@@ -4,7 +4,8 @@ MAINTAINER alex@gnosis.pm
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils \
 				cron \
  				lftp \
-				nano 
+				nano \
+				xxd
 
 RUN rm -rf /var/lib/apt/lists/*
 

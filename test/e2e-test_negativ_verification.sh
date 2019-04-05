@@ -27,7 +27,7 @@ assert ()                 #  If condition false,
 } # Insert a similar assert() function into a script you need to debug.    
 #######################################################################
 
-connect_to_sftp_server="sftp -i /root/.ssh/$SSH_FILE $SSH_USER@trusted-setup.staging.gnosisdev.com"
+. /app/scripts/load_env_sshkey.sh
 
 export MAKEFIRSTCONTRIBUTION=yes
 
@@ -35,11 +35,18 @@ sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize
 sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 8;/g' /app/src/small_bn256/mod.rs
 
 printf 'entropyForSolutionGeneration' | source /app/scripts/initial_setup.sh
-touch response 
-echo "safsdf" >> response
+cp /app/response /app/response-temp
+# read 1 byte at offset 40C
+b_hex=$(xxd -seek $((16#40C)) -l 1 -ps /app/response -)
+# delete 3 least significant bits
+b_dec=$(($((16#$b_hex)) & $((2#11111000))))
+# write 1 byte back at offset 40C
+printf "00040c: %02x" $b_dec | xxd -r - /app/response
+diff  /app/response /app/response-temp
 echo "put response" | $connect_to_sftp_server:$SSH_USER
 
-source /app/scripts/validationAndPreparation.sh
+source /app/scripts/validationAndPreparation.sh | grep "Verification failed"
+
 
 condition="$THRESHOLD_DATE_FOR_FILE_ACCEPTANCE -ge 1"
 LINENO="Contribution date not adjusted"
