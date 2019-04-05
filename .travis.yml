@@ -16,5 +16,5 @@ before_install:
 - chmod 600 ~/id_rsa_worker
 - docker build --tag=validation_worker .
 script:
-- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker -v ~/variables.sh:~/variables.sh validation_worker
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker -v ~/variables.sh:/app/variables.sh validation_worker
   bash -c "source test/e2e-test_positive_verification.sh"
