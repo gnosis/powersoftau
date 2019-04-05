@@ -37,9 +37,6 @@ RUN crontab /etc/cron.d/hello-cron
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
 
-#Copy env variables folder for cron job
-COPY ~/variables.sh ./
-
 # Run the command on container startup
 CMD ["cron", "-f"]
 
