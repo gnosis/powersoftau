@@ -20,8 +20,12 @@ before_install:
 install:
   - docker build -t $DOCKER_TAG .
 script:
-- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker $DOCKER_TAG
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker validation_worker
   bash -c "source test/e2e-test_positive_verification.sh"
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker validation_worker
+  bash -c "source test/e2e-test_negative_verification.sh"
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker validation_worker
+  bash -c "source test/e2e-test_no_new_upload.sh"
 after_script:
 - |
   # Create Docker image if branch master and not on pull requests
