@@ -16,8 +16,8 @@ fi
 # Upload new challenge file to the challenges folder.
 echo "put challenge" | $connect_to_sftp_server:challenges
 
-MESSAGE="The ceremony is ready to get started! Let's do it. The first challenge was uploaded here:$SFTP_ADDRESS:challenges"
-. /app/scripts/e2e-test_no_new_upload.sh $MESSAGE
+MESSAGE="The ceremony is ready to get started! The first challenge was uploaded here: ${SFTP_ADDRESS}:challenges"
+. /app/scripts/send_msg_to_gitter.sh "$MESSAGE"
 
 #document new challenge in same folder
 #copying the first upload is not supported, see here: https://superuser.com/questions/1166354/copy-file-on-sftp-to-another-directory-without-roundtrip

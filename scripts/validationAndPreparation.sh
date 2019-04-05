@@ -35,10 +35,10 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 		set +e
 		cargo run --release --bin verify_transform_constrained
 		if [ $? -eq 0 ]; then
-		    VERIFIED=true
+		    VERIFIED="true"
 		    echo Verification successful
 		else
-			VERIFIED=false
+			VERIFIED="false"
 		    echo Verification failed
 		fi
 		set -e
@@ -46,16 +46,16 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 		set +e
 		cargo run --release --bin verify_transform
 		if [ $? -eq 0 ]; then
-		    VERIFIED=true
+		    VERIFIED="true"
 		    echo Verification successful
 		else
-			VERIFIED=false
+			VERIFIED="false"
 		    echo Verification failed
 		fi
 		set -e
 	fi
 
-	if [[ VERIFIED = "true" ]]; then
+	if [[ "$VERIFIED" = "true" ]]; then
 		echo "uploading to ftp server and documentation; this could take a while..."
 		mv new_challenge challenge
 		mv response "response-$TRUSTED_SETUP_TURN"
@@ -78,7 +78,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 		
 		#Post a message in Gitter:
 		MESSAGE="The submission of $NEWEST_CONTRIBUTION was successful. The new challenge for the $TRUSTED_SETUP_TURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp:trusted-setup.staging.gnosisdev.com:challenges"
-		. /app/scripts/e2e-test_no_new_upload.sh $MESSAGE
+		. /app/scripts/send_msg_to_gitter.sh "$MESSAGE"
 	fi
 else
 	echo "Newest contribution was created at $NEWEST_CONTRIBUTION_DATE and is not newer than $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE"
