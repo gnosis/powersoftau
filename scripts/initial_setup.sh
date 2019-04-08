@@ -6,11 +6,13 @@ cd /app/
 rm challenge
 rm response
 rm new_challenge
-set -e 
+set -e
 if [[ ! -z "${CONSTRAINED}" ]]; then
-		cargo run --release --bin new_constrained
+		# cargo run --release --bin new_constrained
+		./target/release/new_constrained
 	else
-		cargo run --release --bin new
+		# cargo run --release --bin new
+		./target/release/new
 fi
 
 # Upload new challenge file to the challenges folder.
@@ -27,11 +29,13 @@ echo "put challenge-$TIME" | $connect_to_sftp_server:challenges
 
 #optional first computation
 if [[ ! -z "${MAKEFIRSTCONTRIBUTION}" ]]; then
-	
+
 	if [[ ! -z "${CONSTRAINED}" ]]; then
-		cargo run --release --bin compute_constrained
+		# cargo run --release --bin compute_constrained
+		./target/release/compute_constrained
 	else
-		cargo run --release --bin compute
+		# cargo run --release --bin compute
+		./target/release/compute
 	fi
 	# Change to user worker and put into top level folder instead to josojo:
 	echo "put response" | $connect_to_sftp_server:$SSH_USER
