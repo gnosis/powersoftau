@@ -23,7 +23,6 @@ b_hex=$(xxd -seek $((16#40C)) -l 1 -ps /app/response -)
 b_dec=$(($((16#$b_hex)) & $((2#11111000))))
 # write 1 byte back at offset 40C
 printf "00040c: %02x" $b_dec | xxd -r - /app/response
-diff  /app/response /app/response-temp
 echo "put response" | $connect_to_sftp_server:$SSH_USER
 
 source /app/scripts/validationAndPreparation.sh | grep "Verification failed"
