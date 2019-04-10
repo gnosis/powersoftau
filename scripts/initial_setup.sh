@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# initiates the first challenge file
+
 . /app/scripts/load_env_sshkey.sh
 cd /app/
 
