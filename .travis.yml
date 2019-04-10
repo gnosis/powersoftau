@@ -12,7 +12,7 @@ before_install:
 - echo "export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=20190404122952" >> variables.sh
 - echo "export TRUSTED_SETUP_TURN=2" >> variables.sh
 - echo "export SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com" >> variables.sh
-- echo "export MAKEFIRDDSTCONTRIBUTION=yes" >> variables.sh
+- echo "export MAKE_FIRST_CONTRIBUTION=yes" >> variables.sh
 - echo "export CONSTRAINED=true" >> variables.sh
 - echo "export SSH_FILE=id_rsa_worker" >> variables.sh
 - echo "export SSH_USER=validationworker" >> variables.sh

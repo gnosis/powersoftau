@@ -12,6 +12,8 @@ sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize
 sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 8;/g' /app/src/small_bn256/mod.rs
 sed -i "s/export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=.*/export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=1/g" /app/variables.sh
 
+set -e
+
 TURN_BEFORE_TEST=$TRUSTED_SETUP_TURN
 printf 'entropyForSolutionGeneration' | source /app/scripts/initial_setup.sh
 cp /app/response /app/response-temp
