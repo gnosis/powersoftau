@@ -6,6 +6,7 @@
 cd /app/
 
 # First a new ceremony setup is created via:
+set +e
 rm challenge
 rm response
 rm new_challenge
@@ -29,7 +30,7 @@ cp challenge "challenge-$TIME"
 echo "put challenge-$TIME" | $connect_to_sftp_server:challenges
 
 #optional first computation
-if [[ ! -z "${MAKEFIRSTCONTRIBUTION}" ]]; then
+if [[ ! -z "${MAKE_FIRST_CONTRIBUTION}" ]]; then
 	
 	if [[ ! -z "${CONSTRAINED}" ]]; then
 		cargo run --release --bin compute_constrained
