@@ -32,8 +32,6 @@ if [[ ! -z "${MAKE_FIRST_CONTRIBUTION}" ]]; then
 	cp challenge /app/challenge
 	# cargo run --release --bin compute_constrained
 	/app/target/release/compute_constrained
-	pwd
-	ls
 	# upload response
 	echo "put response" | $connect_to_sftp_server:$SSH_USER
 fi
