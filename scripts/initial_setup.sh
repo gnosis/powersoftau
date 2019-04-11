@@ -13,7 +13,7 @@ rm response
 rm new_challenge
 set -e
 # cargo run --release --bin new_constrained
-./target/release/new_constrained
+/app/target/release/new_constrained
 
 
 # Upload new challenge file to the challenges folder.
@@ -32,7 +32,7 @@ echo "put challenge-$TIME" | $connect_to_sftp_server:challenges
 if [[ ! -z "${MAKE_FIRST_CONTRIBUTION}" ]]; then
 
 	# cargo run --release --bin compute_constrained
-	./target/release/compute_constrained
+	/app/target/release/compute_constrained
 
 	# Change to user worker and put into top level folder instead to josojo:
 	echo "put response" | $connect_to_sftp_server:$SSH_USER

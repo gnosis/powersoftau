@@ -29,7 +29,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 	set +e
 	
 	# cargo run --release --bin verify_transform_constrained
-    ./target/release/verify_transform_constrained
+    /app/target/release/verify_transform_constrained
 	if [ $? -eq 0 ]; then
 		VERIFIED="true"
 		echo Verification successful
