@@ -28,6 +28,7 @@ MESSAGE="The ceremony is ready to get started! The first challenge was uploaded 
 TIME=$(date +%s.%N)
 cp challenge "challenge-$TIME"
 echo "put challenge-$TIME" | $connect_to_sftp_server:challenges
+mv challenge "$ENV_VARIABLES_FILE_PATH/challenge"
 
 #optional first computation
 if [[ ! -z "${MAKE_FIRST_CONTRIBUTION}" ]]; then

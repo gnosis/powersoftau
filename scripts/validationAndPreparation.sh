@@ -21,7 +21,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 	sed -i "s/export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=.*/export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=$THRESHOLD_DATE_FOR_FILE_ACCEPTANCE/g" /app/variables.sh
 
 	#If a new contribution is found, do verification and preparation for next round
-	cd /app/
+	cd $ENV_VARIABLES_FILE_PATH
 	echo "starting download; this could take a while..."
 	$connect_to_sftp_server:$NEWEST_CONTRIBUTION_NAME /app/.
 

@@ -16,6 +16,7 @@ before_install:
 - echo "export CONSTRAINED=true" >> variables.sh
 - echo "export SSH_FILE=id_rsa_worker" >> variables.sh
 - echo "export SSH_USER=validationworker" >> variables.sh
+- echo "export ENV_VARIABLES_FILE_PATH=/app" >> variables.sh
 - chmod 600 ~/id_rsa_worker
 install:
   - docker build -t $DOCKER_TAG .
