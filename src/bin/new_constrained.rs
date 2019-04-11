@@ -23,7 +23,7 @@ fn main() {
     println!("Will generate an empty accumulator for 2^{} powers of tau", Bn256CeremonyParameters::REQUIRED_POWER);
     println!("In total will generate up to {} powers", Bn256CeremonyParameters::TAU_POWERS_G1_LENGTH);
     
-    let env_var: String = env::var("CHALLENGE_WORKDIR").expect("Specify CHALLENGE_WORKDIR env variable");
+    let env_var: String = env::var("CHALLENGE_WORKDIR").unwrap_or(String::from(""));
     let path = env_var + &String::from("/challenge");
     let file = OpenOptions::new()
                             .read(true)
