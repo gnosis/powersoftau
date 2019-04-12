@@ -1,3 +1,5 @@
+# Disable branch control for the moment
+# if: (branch = master) OR (type = pull_request) OR (tag IS present)
 language: ruby
 services:
 - docker
@@ -7,25 +9,25 @@ env:
 before_install:
 - openssl aes-256-cbc -K $encrypted_fd47d756d2b5_key -iv $encrypted_fd47d756d2b5_iv
   -in id_rsa_worker.enc -out ~/id_rsa_worker -d
-- touch variables.sh
-- echo "export KEY_GITTER_TRUSTED_SETUP_ROOM=$KEY_GITTER_TRUSTED_SETUP_ROOM" >> variables.sh
-- echo "export THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=20190404122952" >> variables.sh
-- echo "export TRUSTED_SETUP_TURN=2" >> variables.sh
-- echo "export SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com" >> variables.sh
-- echo "export MAKEFIRDDSTCONTRIBUTION=yes" >> variables.sh
-- echo "export CONSTRAINED=true" >> variables.sh
-- echo "export SSH_FILE=id_rsa_worker" >> variables.sh
-- echo "export SSH_USER=validationworker" >> variables.sh
+- |
+  # Create variables.sh, it represents a text file database, will be used for test purposes
+  touch /tmp/variables.sh
+  echo "KEY_GITTER_TRUSTED_SETUP_ROOM=$KEY_GITTER_TRUSTED_SETUP_ROOM" >> /tmp/variables.sh
+  echo "THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=20190404122952" >> /tmp/variables.sh
+  echo "TRUSTED_SETUP_TURN=2" >> /tmp/variables.sh
+  echo "SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com" >> /tmp/variables.sh
+  echo "MAKE_FIRST_CONTRIBUTION=yes" >> /tmp/variables.sh
+  echo "CONSTRAINED=true" >> /tmp/variables.sh
+  echo "SSH_FILE=id_rsa_worker" >> /tmp/variables.sh
+  echo "SSH_USER=validationworker" >> /tmp/variables.sh
+  echo "CHALLENGE_WORKDIR=/tmp" >> /tmp/variables.sh
+  echo "DATABASE_FILE_PATH=/tmp/variables.sh" >> /tmp/variables.sh
 - chmod 600 ~/id_rsa_worker
 install:
-  - docker build -t $DOCKER_TAG .
+  - docker build -t $DOCKER_TAG -f DockerfileDevops .
 script:
-- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker $DOCKER_TAG
-  bash -c "source test/e2e-test_positive_verification.sh"
-- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker $DOCKER_TAG
-  bash -c "source test/e2e-test_negative_verification.sh"
-- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker $DOCKER_TAG
-  bash -c "source test/e2e-test_no_new_upload.sh"
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker --env-file /tmp/variables.sh $DOCKER_TAG
+  bash -c "bash test/util/run_all_tests.sh"
 after_script:
 - |
   # Create Docker image if branch master and not on pull requests

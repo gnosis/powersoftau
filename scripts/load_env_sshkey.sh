@@ -1,4 +1,8 @@
-. /app/variables.sh
+#!/bin/bash
+#
+# run the varariables.sh to load all enviromental variables set sets common aliases
+
+# . /app/variables.sh
 
 # If `SSH_FILE_PATH` is empty/unset
 if [ -z "$SSH_FILE_PATH" ]
