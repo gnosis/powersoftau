@@ -7,7 +7,8 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
  				lftp \
 				curl \
-				openssh-server
+				openssh-server \
+        xxd
 
 RUN rm -rf /var/lib/apt/lists/*
 
