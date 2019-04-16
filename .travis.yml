@@ -11,23 +11,25 @@ before_install:
   -in id_rsa_worker.enc -out ~/id_rsa_worker -d
 - |
   # Create variables.sh, it represents a text file database, will be used for test purposes
-  touch /tmp/variables.sh
-  echo "KEY_GITTER_TRUSTED_SETUP_ROOM=$KEY_GITTER_TRUSTED_SETUP_ROOM" >> /tmp/variables.sh
-  echo "THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=20190404122952" >> /tmp/variables.sh
-  echo "TRUSTED_SETUP_TURN=2" >> /tmp/variables.sh
-  echo "SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com" >> /tmp/variables.sh
-  echo "MAKE_FIRST_CONTRIBUTION=yes" >> /tmp/variables.sh
-  echo "CONSTRAINED=true" >> /tmp/variables.sh
-  echo "SSH_FILE=id_rsa_worker" >> /tmp/variables.sh
-  echo "SSH_USER=validationworker" >> /tmp/variables.sh
-  echo "CHALLENGE_WORKDIR=/tmp" >> /tmp/variables.sh
-  echo "DATABASE_FILE_PATH=/app/variables.sh" >> /tmp/variables.sh
+  mkdir -p /tmp/volume
+  touch /tmp/volume/variables.sh
+  echo "KEY_GITTER_TRUSTED_SETUP_ROOM=$KEY_GITTER_TRUSTED_SETUP_ROOM" >> /tmp/volume/variables.sh
+  echo "THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=20190404122952" >> /tmp/volume/variables.sh
+  echo "TRUSTED_SETUP_TURN=2" >> /tmp/volume/variables.sh
+  echo "SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com" >> /tmp/volume/variables.sh
+  echo "MAKE_FIRST_CONTRIBUTION=yes" >> /tmp/volume/variables.sh
+  echo "CONSTRAINED=true" >> /tmp/volume/variables.sh
+  echo "SSH_FILE=id_rsa_worker" >> /tmp/volume/variables.sh
+  echo "SSH_USER=validationworker" >> /tmp/volume/variables.sh
+  echo "CHALLENGE_WORKDIR=/tmp" >> /tmp/volume/variables.sh
+  echo "DATABASE_FILE_PATH=/tmp/volume/variables.sh" >> /tmp/volume/variables.sh # /app/variables.sh will get updated by some scripts
+  echo "RUST_BACKTRACE=1" >> /tmp/volume/variables.sh
 - chmod 600 ~/id_rsa_worker
 install:
   - docker build -t $DOCKER_TAG -f DockerfileDevops .
 script:
-- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker --env-file /tmp/variables.sh -v /tmp/variables.sh:/tmp/variables.sh $DOCKER_TAG
-  bash -c "cp /tmp/variables.sh /app/variables.sh; bash test/util/run_all_tests.sh"
+- docker run -it -v ~/id_rsa_worker:/root/.ssh/id_rsa_worker --env-file /tmp/volume/variables.sh -v /tmp/volume:/tmp/volume $DOCKER_TAG
+  bash -c "bash test/util/run_all_tests.sh"
 after_script:
 - |
   # Create Docker image if branch master and not on pull requests
