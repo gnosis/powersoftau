@@ -14,6 +14,8 @@ sed -i "s/THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=.*/THRESHOLD_DATE_FOR_FILE_ACCEPTAN
 
 set -e
 
+. /app/scripts/build_all.sh
+
 TURN_BEFORE_TEST=$TRUSTED_SETUP_TURN
 printf 'entropyForSolutionGeneration' | source /app/scripts/initial_setup.sh
 cp "$CHALLENGE_WORKDIR/response" "$CHALLENGE_WORKDIR/response-temp"
@@ -40,3 +42,4 @@ assert "$condition" $LINENO
 #reseting values
 sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 26;/g' /app/src/bn256/mod.rs
 sed -i 's/const REQUIRED_POWER: usize = [0-9][0-9];*/const REQUIRED_POWER: usize = 26;/g' /app/src/small_bn256/mod.rs
+. /app/scripts/build_all.sh
