@@ -2,7 +2,7 @@
 #
 # run the varariables.sh to load all enviromental variables set sets common aliases
 
-. /tmp/volume/variables.sh
+. $DATABASE_FILE_PATH
 
 # If `SSH_FILE_PATH` is empty/unset
 if [ -z "$SSH_FILE_PATH" ]
