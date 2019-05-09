@@ -11,9 +11,7 @@ source /app/scripts/recompile_code_with_trusted_setup_size.sh 8
 sed -i "s/THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=.*/THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=1/g" $DATABASE_FILE_PATH
 
 printf 'entropyForSolutionGeneration' | source /app/scripts/initial_setup.sh
-
-rm $CHALLENGE_WORKDIR/response
-
+rm "$CHALLENGE_WORKDIR/response"
 source /app/scripts/validationAndPreparation.sh
 
 condition="$THRESHOLD_DATE_FOR_FILE_ACCEPTANCE -ge 1"
