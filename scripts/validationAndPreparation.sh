@@ -21,9 +21,9 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 	sed -i "s/THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=.*/THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=$THRESHOLD_DATE_FOR_FILE_ACCEPTANCE/g" $DATABASE_FILE_PATH
 
 	#If a new contribution is found, do verification and preparation for next round
-	cd $CHALLENGE_WORKDIR
+	cd /$CHALLENGE_WORKDIR
 	echo "starting download; this could take a while..."
-	$connect_to_sftp_server:$NEWEST_CONTRIBUTION_NAME /app/.
+	$connect_to_sftp_server:$NEWEST_CONTRIBUTION_NAME /$CHALLENGE_WORKDIR/.
 
 	echo "verifying the submission; this could take a while..."
 	set +e
