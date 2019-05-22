@@ -51,13 +51,14 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 		#document response from previous participant
 		echo "put response-$TRUSTED_SETUP_TURN-$TIME" | $connect_to_sftp_server:challenges
 
-		#document new challenge file
-		cp challenge "challenge-$TRUSTED_SETUP_TURN-$TIME"
-		echo "put challenge-$TRUSTED_SETUP_TURN-$TIME" | $connect_to_sftp_server:challenges
 
 		#safe incremented variable Trusted_setup_turn for next execution
 		TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1)) #used for easy testing with source command
 		sed -i "s/TRUSTED_SETUP_TURN=.*/TRUSTED_SETUP_TURN=$TRUSTED_SETUP_TURN/g" $DATABASE_FILE_PATH
+
+		#document new challenge file
+		cp challenge "challenge-$TRUSTED_SETUP_TURN-$TIME"
+		echo "put challenge-$TRUSTED_SETUP_TURN-$TIME" | $connect_to_sftp_server:challenges
 
 		#Post a message in Gitter:
 		MESSAGE="The submission of $NEWEST_CONTRIBUTION_NAME uploaded at $NEWEST_CONTRIBUTION_DATE was successful. The new challenge for the $TRUSTED_SETUP_TURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp:trusted-setup.staging.gnosisdev.com:challenges"
