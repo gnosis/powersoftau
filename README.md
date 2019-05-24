@@ -18,9 +18,9 @@ Every participant needs to create a ssh key. For help see [here](https://conflue
 
 1. Download latest challenge file from ftp-server with your ssl key.
 	You can use an UI program as Filezilla (host is sftp://trusted-setup.staging.gnosisdev.com) or the following shell command:
-		```bash
-		sftp -i ~/.ssh/id_rsa  your_user_name@trusted-setup.gnosis.pm:challenges/challenge ~/challenge
-		```
+	```bash
+	sftp -i ~/.ssh/id_rsa  your_user_name@trusted-setup.gnosis.pm:challenges/challenge ~/challenge
+	```
 2. Copy the downloaded challenge file to your dedicated computer for running the ceremony.
 3. Download the repository
 	```bash
