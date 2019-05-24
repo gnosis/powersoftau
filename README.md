@@ -29,7 +29,7 @@ Every participant needs to create a ssh key. For help see [here](https://conflue
 	```
 	or download it from here:
 	sftp://trusted-setup.staging.gnosisdev.com:testalex/compute_constrained
-3. Copy the downloaded challenge file and the newly generated executable from 'powersoftau/target/release/compute_constrained' to your dedicated computer for running the ceremony in the same folder.	
+3. Copy the downloaded challenge file and the newly generated executable from 'powersoftau/target/release/compute_constrained' to your dedicated computer in the same folder.	
 4. Perform some of the recommended steps for ceremony from the next section.
 5. Then do the acutal computation:
 	```bash
