@@ -21,25 +21,22 @@ Every participant needs to create a ssh key. For help see [here](https://conflue
 	```bash
 	sftp -i ~/.ssh/id_rsa  your_usr_name@trusted-setup.staging.gnosisdev.com:challenges/challenge
 	```
-2. Download the repository
+2. Generate the exectuable binary:
 	```bash
 	git clone git@github.com:matterinc/powersoftau.git
-	```
-	and copy it to your dedicated computer.
-4. Generate the program:
-	```bash
+	cd powersoftau
 	cargo build --release --bin compute_constrained
 	```
 	or download it from here:
 	sftp://trusted-setup.staging.gnosisdev.com:testalex/compute_constrained
-5. Copy the downloaded challenge file and the newly generated executable from 'powersoftau/target/release/compute_constrained' to your dedicated computer for running the ceremony in the same folder.	
-6. Perform some of the recommended steps for ceremony from the next section.
-7. Then do the acutal computation:
+3. Copy the downloaded challenge file and the newly generated executable from 'powersoftau/target/release/compute_constrained' to your dedicated computer for running the ceremony in the same folder.	
+4. Perform some of the recommended steps for ceremony from the next section.
+5. Then do the acutal computation:
 	```bash
 	./compute_constrained
 	```
-8. Broadcast your contribution hash via twitter or your preferred social media account. 
-9. Upload the 'response' file to ftp-server via Filezilla or:
+6. Broadcast your contribution hash via twitter or your preferred social media account. 
+7. Upload the 'response' file to ftp-server via Filezilla or:
 	```bash
 	echo "put response" | sftp -i ~/.ssh/id_rsa  your_user_name@trusted-setup.gnosis.pm:your_user_name
 	```  
