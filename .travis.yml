@@ -17,7 +17,8 @@ before_install:
   echo "TRUSTED_SETUP_TURN=2" >> /tmp/volume/variables.sh
   echo "SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com" >> /tmp/volume/variables.sh
   echo "MAKE_FIRST_CONTRIBUTION=yes" >> /tmp/volume/variables.sh
-  echo "CONSTRAINED=true" >> /tmp/volume/variables.sh
+  echo "SFTP_ARCHIVE_PATH=archive_test" >> /tmp/volume/variables.sh
+  echo "SFTP_CHALLENGE_PATH=challenges_test" >> /tmp/volume/variables.sh
   echo "SSH_USER=validationworker" >> /tmp/volume/variables.sh
   echo "CHALLENGE_WORKDIR=/tmp" >> /tmp/volume/variables.sh
   echo "DATABASE_FILE_PATH=/tmp/volume/variables.sh" >> /tmp/volume/variables.sh # /app/variables.sh will get updated by some scripts
