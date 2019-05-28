@@ -12,11 +12,11 @@ Extended to support Ethereum's BN256 curve and made it easier to change size of 
 
 ## Instructions
 
-Every participant needs to create a ssh key. For help see [here](https://confluence.atlassian.com/bitbucketserver/creating-ssh-keys-776639788.html). Please provide the public key in the [gitter group](https://gitter.im/Trusted_setup_for_SNAPPS/community). Then, we will propose a slot for the participation for you. Once we agreed on a slot, you are supposed to do the following steps:
+Every participant needs to create a ssh key for accessing the sftp server. For help see [here](https://confluence.atlassian.com/bitbucketserver/creating-ssh-keys-776639788.html). Please provide the public key in the [gitter group](https://gitter.im/Trusted_setup_for_SNAPPS/community). In this group, the trusted setup participant's turns will also be organized. Once it is your turn, you are supposed to do the following steps:
 
 #Procedure:
 
-1. Download latest challenge file from ftp-server with your ssl key.
+1. Download latest challenge file from sftp-server with your ssl key.
 	You can use an UI program as Filezilla (host is sftp://trusted-setup.staging.gnosisdev.com) or the following shell command:
 	```bash
 	sftp -i ~/.ssh/id_rsa  your_usr_name@trusted-setup.staging.gnosisdev.com:challenges/challenge
@@ -28,17 +28,17 @@ Every participant needs to create a ssh key. For help see [here](https://conflue
 	cargo build --release --bin compute_constrained
 	```
 	or download it from here:
-	sftp://trusted-setup.staging.gnosisdev.com:testalex/compute_constrained
-3. Copy the downloaded challenge file and the newly generated executable from 'powersoftau/target/release/compute_constrained' to your dedicated computer in the same folder.	
-4. Perform some of the recommended steps for ceremony from the next section.
-5. Then do the acutal computation:
+	`sftp://trusted-setup.staging.gnosisdev.com:testalex/compute_constrained`
+3. Copy the downloaded challenge file and the newly generated executable from `powersoftau/target/release/compute_constrained` to your dedicated computer for the trusted setup into a folder: `Execution`.	
+4. (Optional) Perform some of the recommended steps from the next section.
+5. On the dedicated computer, do the acutal computation from within the `Execution` folder by running:
 	```bash
 	./compute_constrained
 	```
 6. Broadcast your contribution hash via twitter or your preferred social media account. 
-7. Upload the 'response' file to ftp-server via Filezilla or:
+7. Upload the 'response' file to sftp-server into the your own folder (your_ssl_user_name) via Filezilla or:
 	```bash
-	echo "put response" | sftp -i ~/.ssh/id_rsa  your_user_name@trusted-setup.gnosis.pm:your_user_name
+	echo "put response" | sftp -i ~/.ssh/id_rsa  your_user_name@trusted-setup.gnosis.pm:your_ssl_user_name
 	```  
 
 ## Recommendations from original ceremony
