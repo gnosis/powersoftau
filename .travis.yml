@@ -12,7 +12,6 @@ before_install:
   # Create variables.sh, it represents a text file database, will be used for test purposes
   mkdir -p /tmp/volume
   touch /tmp/volume/variables.sh
-  echo "KEY_GITTER_TRUSTED_SETUP_ROOM=$KEY_GITTER_TRUSTED_SETUP_ROOM" >> /tmp/volume/variables.sh
   echo "THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=20190404122952" >> /tmp/volume/variables.sh
   echo "TRUSTED_SETUP_TURN=2" >> /tmp/volume/variables.sh
   echo "SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com" >> /tmp/volume/variables.sh
