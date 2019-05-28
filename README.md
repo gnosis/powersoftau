@@ -12,7 +12,7 @@ Extended to support Ethereum's BN256 curve and made it easier to change size of 
 
 ## Instructions
 
-Every participant needs to create a ssh key. For help see [here](https://confluence.atlassian.com/bitbucketserver/creating-ssh-keys-776639788.html). Please provide the public key in the [gitter group](https://gitter.im/Trusted_setup_for_SNAPPS/community). Then, we will propose a slot for the participation for you. Once we agreed on a slot, you are supposed to do the following steps:
+Every participant needs to create a ssh key. For help see [here](https://confluence.atlassian.com/bitbucketserver/creating-ssh-keys-776639788.html). Please provide the public key in the [gitter group](https://gitter.im/Trusted_setup_for_SNAPPS/community). In this group, the trusted setup participants turns will also be organized. Once it is your turn, you are supposed to do the following steps:
 
 #Procedure:
 
@@ -28,10 +28,10 @@ Every participant needs to create a ssh key. For help see [here](https://conflue
 	cargo build --release --bin compute_constrained
 	```
 	or download it from here:
-	sftp://trusted-setup.staging.gnosisdev.com:testalex/compute_constrained
-3. Copy the downloaded challenge file and the newly generated executable from 'powersoftau/target/release/compute_constrained' to your dedicated computer in the same folder.	
+	`sftp://trusted-setup.staging.gnosisdev.com:testalex/compute_constrained`
+3. Copy the downloaded challenge file and the newly generated executable from `powersoftau/target/release/compute_constrained` to your dedicated computer into a folder: `Execution`.	
 4. Perform some of the recommended steps for ceremony from the next section.
-5. Then do the acutal computation:
+5. On the dedicated computer, do the acutal computation from within the `Execution` folder by running:
 	```bash
 	./compute_constrained
 	```
