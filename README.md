@@ -23,7 +23,7 @@ Every participant needs to create a ssh key for accessing the sftp server. For h
 	```
 2. Generate the exectuable binary:
 	```bash
-	git clone git@github.com:matterinc/powersoftau.git
+	git clone https://github.com/matterinc/powersoftau
 	cd powersoftau
 	cargo build --release --bin compute_constrained
 	```
