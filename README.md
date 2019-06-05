@@ -32,7 +32,7 @@ Every participant needs to create a ssh key for accessing the sftp server. For h
 3. Copy the downloaded challenge file and the newly generated executable from `powersoftau/target/release/compute_constrained` to your dedicated computer for the trusted setup into a folder: `Execution`.	
 4. (Optional) Perform some of the recommended steps from the next section.
 5. Make sure your dedicated computer for the ceremony will not fall asleep, even if the following step takes several hours.
-6. On the dedicated computer, do the acutal computation from within the `Execution` folder by running:
+6. On the dedicated computer, perform computation from _within_ the `Execution` folder by running:
 	```bash
 	./compute_constrained
 	```
