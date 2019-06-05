@@ -39,7 +39,7 @@ Every participant needs to create a ssh key for accessing the sftp server. For h
 7. Broadcast your contribution hash via twitter or your preferred social media account. 
 8. Upload the 'response' file to sftp-server into the your own folder (your_ssl_user_name) via Filezilla or:
 	```bash
-	echo "put response" | sftp -i ~/.ssh/id_rsa  your_user_name@trusted-setup.staging.gnosisdev.com::your_ssl_user_name
+	echo "put response" | sftp -i ~/.ssh/id_rsa  your_user_name@trusted-setup.staging.gnosisdev.com:your_ssl_user_name
 	```  
 
 ## Recommendations from original ceremony
