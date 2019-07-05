@@ -23,7 +23,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 	#If a new contribution is found, do verification and preparation for next round
 	cd $CHALLENGE_WORKDIR
 	echo "starting download; this could take a while..."
-	$connect_to_sftp_server:$NEWEST_CONTRIBUTION_NAME $CHALLENGE_WORKDIR
+	$connect_to_sftp_server:$NEWEST_CONTRIBUTION_NAME $CHALLENGE_WORKDIR	
 
 	echo "verifying the submission; this could take a while..."
 	set +e
@@ -50,7 +50,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 
 		#document response from previous participant
 		echo "put response-$TRUSTED_SETUP_TURN-$TIME" | $connect_to_sftp_server:$SFTP_ARCHIVE_PATH
-
+		rm response-$TRUSTED_SETUP_TURN-$TIME
 
 		#safe incremented variable Trusted_setup_turn for next execution
 		TRUSTED_SETUP_TURN=$((TRUSTED_SETUP_TURN + 1)) #used for easy testing with source command
@@ -59,6 +59,7 @@ if [ $NEWEST_CONTRIBUTION_DATE -gt $THRESHOLD_DATE_FOR_FILE_ACCEPTANCE ]; then
 		#document new challenge file
 		cp challenge "challenge-$TRUSTED_SETUP_TURN-$TIME"
 		echo "put challenge-$TRUSTED_SETUP_TURN-$TIME" | $connect_to_sftp_server:$SFTP_ARCHIVE_PATH
+		rm challenge-$TRUSTED_SETUP_TURN-$TIME
 
 		#Post a message in Gitter:
 		MESSAGE="The submission of $NEWEST_CONTRIBUTION_NAME uploaded at $NEWEST_CONTRIBUTION_DATE was successful. The new challenge for the $TRUSTED_SETUP_TURN -th contributor has been uploaded. If you want to be the next contributor, let us know in the chat. Your challenge would be ready here: sftp://$SFTP_ADDRESS:$SFTP_CHALLENGE_PATH . The instructions for the computation can be found here: https://github.com/gnosis/powersoftau#instructions . Please also consider the process instructions described in here: https://docs.google.com/document/d/1a9EFrJkVX6DoqDA9uQNZF6Fdi9zoFeOJ78pc7vem-FA "
