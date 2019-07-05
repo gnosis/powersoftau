@@ -17,9 +17,9 @@ Every participant needs to create a ssh key for accessing the sftp server. For h
 #Procedure:
 
 1. Download latest challenge file from sftp-server with your ssl key.
-	You can use an UI program as Filezilla (host is sftp://trusted-setup.staging.gnosisdev.com) or the following shell command:
+	You can use an UI program as Filezilla (host is sftp://general-trusted-setup.production.gnosis.io) or the following shell command:
 	```bash
-	sftp -i ~/.ssh/id_rsa  your_usr_name@trusted-setup.staging.gnosisdev.com:challenges/challenge
+	sftp -i ~/.ssh/id_rsa  your_usr_name@general-trusted-setup.production.gnosis.io:challenges/challenge
 	```
 2. Generate the exectuable binary:
 	```bash
@@ -28,7 +28,7 @@ Every participant needs to create a ssh key for accessing the sftp server. For h
 	cargo build --release --bin compute_constrained
 	```
 	or download it from here:
-	`sftp://trusted-setup.staging.gnosisdev.com:testalex/compute_constrained`
+	`sftp://general-trusted-setup.production.gnosis.io:testalex/compute_constrained`
 3. Copy the downloaded challenge file and the newly generated executable from `powersoftau/target/release/compute_constrained` to your dedicated computer for the trusted setup into a folder: `Execution`.	
 4. (Optional) Perform some of the recommended steps from the next section.
 5. Make sure your dedicated computer for the ceremony will not fall asleep, even if the following step takes several hours.
@@ -39,7 +39,7 @@ Every participant needs to create a ssh key for accessing the sftp server. For h
 7. Broadcast your contribution hash via twitter or your preferred social media account. 
 8. Upload the 'response' file to sftp-server into the your own folder (your_ssl_user_name) via Filezilla or:
 	```bash
-	echo "put response" | sftp -i ~/.ssh/id_rsa  your_user_name@trusted-setup.staging.gnosisdev.com:your_ssl_user_name
+	echo "put response" | sftp -i ~/.ssh/id_rsa  your_user_name@general-trusted-setup.production.gnosis.io:your_ssl_user_name
 	```  
 
 ## Recommendations from original ceremony
@@ -70,7 +70,7 @@ This requires a prepared env file looking like this:
 ```
 THRESHOLD_DATE_FOR_FILE_ACCEPTANCE=20190509091113
 TRUSTED_SETUP_TURN=10
-SFTP_ADDRESS=trusted-setup.staging.gnosisdev.com
+SFTP_ADDRESS=trusted-setup.dev.gnosisdev.com
 MAKE_FIRST_CONTRIBUTION=yes
 CONSTRAINED=true
 SSH_USER=validationworker
