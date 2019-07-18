@@ -12,4 +12,4 @@ then
 fi
 
 chmod 600 $SSH_FILE_PATH
-connect_to_sftp_server="sftp -i $SSH_FILE_PATH -o StrictHostKeyChecking=no $SSH_USER@$SFTP_ADDRESS"
+connect_to_sftp_server="sftp -i $SSH_FILE_PATH -o StrictHostKeyChecking=no -o "ServerAliveInterval 60" $SSH_USER@$SFTP_ADDRESS"
